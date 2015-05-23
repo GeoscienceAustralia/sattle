@@ -1,3 +1,3 @@
-# resttle
+#SatTle
 
-Restful web service for satellite TLE data.
+Satellite TLE data service.
