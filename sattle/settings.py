@@ -51,7 +51,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'resttle.urls'
+ROOT_URLCONF = 'sattle.urls'
 
 TEMPLATES = [
     {
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'resttle.wsgi.application'
+WSGI_APPLICATION = 'sattle.wsgi.application'
 
 
 # Database
@@ -85,7 +85,7 @@ DATABASES = {
     'default-1': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         #'NAME': 'rmsdb',
-        'NAME': 'resttle',
+        'NAME': 'sattle',
     },
     'default':{
         'ENGINE': 'django.db.backends.postgresql_psycopg2',

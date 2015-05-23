@@ -6,11 +6,11 @@ import django
 
 if __name__ == "__main__":
     # setup django project
-    os.sys.path.append("/home/fzhang/PycharmProjects/resttle")
+    os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
 
     print(os.sys.path)
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "resttle.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sattle.settings")
 
     django.setup()
     ################################################
@@ -22,6 +22,7 @@ if __name__ == "__main__":
     sat.rms_priority = 20
     sat.isactive = True
     sat.save()
+#todo: why duplicate norad_number=99999 no error?
 
     print sat.norad_number
 

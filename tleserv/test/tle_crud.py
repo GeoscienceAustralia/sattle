@@ -6,9 +6,9 @@ import django
 
 if __name__ == "__main__":
     # setup django project
-    os.sys.path.append("/home/fzhang/PycharmProjects/resttle")
+    os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "resttle.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sattle.settings")
 
     django.setup()
     ################################################
