@@ -6,7 +6,8 @@ import django
 
 if __name__ == "__main__":
     # setup django project
-    os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
+    #os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
+    os.sys.path.append("../..")
 
     print(os.sys.path)
 

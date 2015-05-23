@@ -6,7 +6,8 @@ import django
 
 if __name__ == "__main__":
     # setup django project
-    os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
+    #os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
+    os.sys.path.append("../..")
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sattle.settings")
 
@@ -26,7 +27,9 @@ if __name__ == "__main__":
     print type(sat_inst)
 
 ####
-    print Tle.objects.all()
+    all_tle=Tle.objects.all()
+    print "Number of TLE records==" #+ all_tle[-1]
+    print len(all_tle)
 
     a_tle = Tle()
     a_tle.line1 = "1 37849U 11061A   15138.00000000  .00000000  00000-0  45447-5 2    02"

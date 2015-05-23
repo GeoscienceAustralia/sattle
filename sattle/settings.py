@@ -87,6 +87,7 @@ DATABASES = {
         #'NAME': 'rmsdb',
         'NAME': 'sattle',
     },
+    # ubu and aws
     'default':{
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'rmsdb',
