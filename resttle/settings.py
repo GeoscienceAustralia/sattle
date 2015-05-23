@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tleserv',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -73,6 +74,8 @@ WSGI_APPLICATION = 'resttle.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+# googles: django how to non-default db
+# https://docs.djangoproject.com/en/1.8/topics/db/multi-db/
 
 DATABASES = {
     # 'default': {
