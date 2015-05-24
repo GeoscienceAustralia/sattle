@@ -15,7 +15,7 @@ class Satellite(models.Model):
         db_table = 'satellite'
 
     def __str__(self):
-        return self.satname
+        return "%s_%s"%(self.norad_number,self.satname)
 
 
 
@@ -37,6 +37,6 @@ class Tle(models.Model):
         db_table = 'tle'
 
     def __str__(self):
-        return self.path2file
+        return "(%s , %s)" %(self.line1, self.line2)
 
 

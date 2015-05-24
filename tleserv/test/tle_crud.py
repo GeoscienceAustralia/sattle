@@ -3,10 +3,11 @@ __author__ = 'fzhang'
 import os
 import sys
 import django
+from django.utils import timezone
 
 if __name__ == "__main__":
     # setup django project
-    #os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
+    # os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
     os.sys.path.append("../..")
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sattle.settings")
@@ -22,13 +23,22 @@ if __name__ == "__main__":
 
     print "active satellite with given norad number"
 
-    #sat_inst= Satellite.objects.filter(norad_number=37849)
+    # sat_inst= Satellite.objects.filter(norad_number=37849)
     sat_inst = sat2.filter(norad_number=37849)
     print type(sat_inst)
 
-####
-    all_tle=Tle.objects.all()
-    print "Number of TLE records==" #+ all_tle[-1]
+    s = Satellite.objects.get(pk=37849)
+
+    print s.tle_set.all()  # related objects
+    print s.tle_set.count()
+
+    t = s.tle_set.all()
+    t.delete()
+
+
+    ####
+    all_tle = Tle.objects.all()
+    print "Number of TLE records=="  # + all_tle[-1]
     print len(all_tle)
 
     a_tle = Tle()
@@ -38,12 +48,14 @@ if __name__ == "__main__":
     a_tle.norad_number = sat_inst[0]
     a_tle.status = True
     a_tle.epochsec = 1431907200.0000000000
-    a_tle.md5sum="97d1bdc6f3a150977d7eeefdea56723c"
+    a_tle.md5sum = "97d1bdc6f3a150977d7eeefdea56723g"
     a_tle.path2file = "/data/ephemeris/source/nasa/20150519.drl.tle"
     a_tle.tle_dt_utc = "2015-05-18 00:00:00+00"
     a_tle.tle_source = 0
-    a_tle.inp_dt_utc="2015-05-19 10:40:02.685394+00"
+    a_tle.inp_dt_utc = timezone.now()  # OK "2015-05-19 10:40:02.685394+00"
+    # todo: make default timesatmp ?
+    print a_tle
 
     a_tle.save()
 
-    print a_tle.tleid
+    print a_tle.tleid, a_tle.inp_dt_utc
