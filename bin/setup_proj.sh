@@ -2,7 +2,11 @@
 # adapted from https://github.com/sean-moore/genesis
 
 ###############################################################################
-# Purpose: one script install, config
+# Purpose: one script install, config, django, posgres, gunicorn, nginx,
+# Todo: Virtualization environment
+# Todo: test a different user with a sudo privil
+# Todo: Refactor, Centos/Redhat
+# Todo: Restful API and other apps.
 #
 ###############################################################################
 
