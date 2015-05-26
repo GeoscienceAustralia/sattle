@@ -3,8 +3,8 @@
 
 ###############################################################################
 # Purpose: one script install, config, django, posgres, gunicorn, nginx,
-# Todo: Virtualization environment
-# Todo: test a different user with a sudo privil
+# Todo: Virtualenv environment
+# Todo: test a different user with sudo privil
 # Todo: Refactor, Centos/Redhat
 # Todo: Restful API and other apps.
 #
@@ -89,12 +89,12 @@ echoerr "Password is \"postgres\" (no quotes)"
 
 #create a database with postgres as the user
 
-#create user ubuntu
+#create user $WHOAMI ubuntu
 
-sudo su postgres -c "createuser ubuntu"
+sudo su postgres -c "createuser  $WHOAMI"
 
 #alter database mydb owner to ubuntu;
-sudo su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O ubuntu"
+sudo su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O  $WHOAMI"
 
 #until su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O ubuntu;" # no need to create new role
 #do
@@ -124,7 +124,6 @@ NLT=$'\n\t'
 
 TARGET="'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),"
 #NEW_STUFF="'NAME': '$POSTGRES_DB_NAME',${NLT}'USER':'postgres',${NLT}'PASSWORD':'postgres',${NLT}'HOST':'',${NLT}'PORT':'',${NLT}";
-
 NEW_STUFF="'NAME': '$POSTGRES_DB_NAME',${NLT}";
 
 
