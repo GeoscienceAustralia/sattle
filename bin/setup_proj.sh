@@ -7,8 +7,8 @@
 ###############################################################################
 
 # User Variables (edit these)
-DJANGO_PROJECT_NAME='myproject' # name of your django project
-POSTGRES_DB_NAME='mydb' # name of the database that your django project will use
+DJANGO_PROJECT_NAME='myproject2' # name of your django project
+POSTGRES_DB_NAME='mydb2' # name of the database that your django project will use
 
 # BEGIN SCRIPT
 
@@ -40,7 +40,8 @@ control_c() {
 trap control_c SIGINT
 
 # activate sudo for this session
-if sudo echoerr "This script needs sudo access..."; then
+if [ 1 -eq 1 ] # sudo echoerr "This script needs sudo access..."; then
+then
 	echoerr "Access Granted. Genesis starting..."
 else
 	exit
@@ -83,10 +84,18 @@ echoerr "Step Seven: Configure PostgreSQL"
 echoerr "Password is \"postgres\" (no quotes)"
 
 #create a database with postgres as the user
-until su postgres -c "createdb \"$POSTGRES_DB_NAME\";" # no need to create new role
-do
-	echoerr "Wrong password. Password is \"postgres\" (no quotes). Try again"
-done
+
+#create user ubuntu
+
+sudo su postgres -c "createuser ubuntu"
+
+#alter database mydb owner to ubuntu;
+sudo su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O ubuntu"
+
+#until su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O ubuntu;" # no need to create new role
+#do
+#	echoerr "Wrong password. Password is \"postgres\" (no quotes). Try again"
+#done
 
 # Step Eight: Create a Django Project
 echoerr "Step Eight: Create a Django Project"
@@ -110,7 +119,10 @@ SETTINGS_PY="${SETTINGS_PY/$TARGET/$NEW_STUFF}"
 NLT=$'\n\t'
 
 TARGET="'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),"
-NEW_STUFF="'NAME': '$POSTGRES_DB_NAME',${NLT}'USER':'postgres',${NLT}'PASSWORD':'postgres',${NLT}'HOST':'',${NLT}'PORT':'',${NLT}";
+#NEW_STUFF="'NAME': '$POSTGRES_DB_NAME',${NLT}'USER':'postgres',${NLT}'PASSWORD':'postgres',${NLT}'HOST':'',${NLT}'PORT':'',${NLT}";
+
+NEW_STUFF="'NAME': '$POSTGRES_DB_NAME',${NLT}";
+
 
 SETTINGS_PY="${SETTINGS_PY/$TARGET/$NEW_STUFF}"
 
@@ -120,6 +132,14 @@ cd /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/
 
 #python manage.py syncdb
 python manage.py migrate
+retval=$?
+
+if [ $retval -ne 0 ]; then
+echoerr " Failed db migration !"
+else
+echoerr " create a superuser"
+python manage.py createsuperuser
+fi
 
 # Step Nine: Configure Gunicorn
 echoerr "Step Nine: Configure Gunicorn"
