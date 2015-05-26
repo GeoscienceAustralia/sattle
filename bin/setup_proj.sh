@@ -147,7 +147,8 @@ echoerr "Step Nine: Configure Gunicorn"
 echo "command = '/usr/local/bin/gunicorn'
 pythonpath = '/home/$WHOAMI/django/$DJANGO_PROJECT_NAME'
 bind = '127.0.0.1:8001'
-workers = 3" > /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
+#? workers = 3" > /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
+workers = 1" > /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 
 # Step Ten: Configure NGINX
 echoerr "Step Ten: Configure NGINX"
@@ -194,3 +195,4 @@ Navigate to http://localhost/ to make sure that Django is working.
 "
 
 # FIN
+
