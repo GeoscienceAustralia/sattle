@@ -33,7 +33,7 @@ if __name__ == "__main__":
     print s.tle_set.count()
 
     t = s.tle_set.all()
-    t.delete()
+    ## t.delete()
 
 
     ####

@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from tleserv.urls import router2
+from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+
+# TLE API
+    url(r'^tleserv/', include(router2.urls)),
+
 ]
