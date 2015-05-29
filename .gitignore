@@ -1,4 +1,7 @@
 *.py[cod]
+*.pyc
+*.pyo
+
 __pycache__
 dist
 sdist
