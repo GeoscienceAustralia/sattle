@@ -45,3 +45,21 @@ if __name__ == "__main__":
     print "LAND*  Satellites ......"
     landsats = Satellite.objects.filter(satname__startswith='LAND')
     print landsats
+
+    print "Active Satellites ......"
+    sat2 = Satellite.objects.filter(isactive='True')
+    print sat2
+
+    print "active satellite with given norad number"
+
+    # sat_inst= Satellite.objects.filter(norad_number=37849)
+    sat_inst = sat2.filter(norad_number=37849)
+    print type(sat_inst) # QuerySet
+
+    s = Satellite.objects.get(pk=37849) #get one object
+
+    print s.tle_set.all()  # get related objects
+    print ("Number of TLE for this Satellite", s.tle_set.count())
+
+    ## t = s.tle_set.all()
+    ## do not delete ! t.delete()

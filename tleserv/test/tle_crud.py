@@ -5,41 +5,51 @@ import sys
 import django
 from django.utils import timezone
 
-if __name__ == "__main__":
-    # setup django project
-    # os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
-    os.sys.path.append("../..")
+# The next 3 lines are essential to setup django project with DB connection
+# os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
+os.sys.path.append("../..")
+os.environ["DJANGO_SETTINGS_MODULE"] = "sattle.settings"
+django.setup()
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sattle.settings")
+from tleserv.models import Satellite
+from tleserv.models import Tle
 
-    django.setup()
-    ################################################
-    from tleserv.models import Satellite
-    from tleserv.models import Tle
-
-    print "Active Satellites ......"
+################################################
+def get_satellite_norad_numbers():
+    """
+    get a list of active satellite Norad_numbers
+    :return:
+    """
+    #Active Satellites
     sat2 = Satellite.objects.filter(isactive='True')
-    print sat2
 
-    print "active satellite with given norad number"
+    norad_numbers=[]
+    for s in sat2:
+        norad_numbers.append(s.norad_number)
 
-    # sat_inst= Satellite.objects.filter(norad_number=37849)
-    sat_inst = sat2.filter(norad_number=37849)
-    print type(sat_inst)
+    return norad_numbers
 
-    s = Satellite.objects.get(pk=37849)
+def get_tle_by_norad(number):
+    """
+    Get all TLE of a given satellite norad_number
+    :param number: satellite norad_number
+    :return: a set of TLE records-objects
+    """
+    s = Satellite.objects.get(pk=number) #get one object
 
-    print s.tle_set.all()  # related objects
-    print s.tle_set.count()
+    related_tles = s.tle_set.all()  # get related objects
 
-    t = s.tle_set.all()
-    ## t.delete()
+    order_tles = related_tles.order_by("-epochsec")  # -epochsec for descend
+
+    print order_tles[:3]  # three lates for debug
+
+    return order_tles  #related_tles
 
 
-    ####
-    all_tle = Tle.objects.all()
-    print "Number of TLE records=="  # + all_tle[-1]
-    print len(all_tle)
+
+def create_tle_entry(line1, line2):
+    """ define a new tle record and insert into the table
+    """
 
     a_tle = Tle()
     a_tle.line1 = "1 37849U 11061A   15138.00000000  .00000000  00000-0  45447-5 2    02"
@@ -59,3 +69,30 @@ if __name__ == "__main__":
     a_tle.save()
 
     print a_tle.tleid, a_tle.inp_dt_utc
+
+if __name__ == "__main__":
+    # setup django project
+    # os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
+    os.sys.path.append("../..")
+
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sattle.settings")
+
+    django.setup()
+    ################################################
+    from tleserv.models import Satellite
+    from tleserv.models import Tle
+
+    norad_list=get_satellite_norad_numbers()
+    print norad_list
+
+    for noradn in norad_list:
+        tles = get_tle_by_norad(noradn)
+        print ("The Satellite %s has %s TLE records " %(noradn, tles.count()))
+        try:
+            print ("The Satellite %s has this LATEST TLE %s " %(noradn, tles[0]))
+        except IndexError as indexe:
+            print indexe.message
+
+
+# define a new tle record and insert into the table
+    #create_tle_entry("line1","line2")
