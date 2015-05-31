@@ -47,5 +47,5 @@ class TleViewSet(DefaultsMixin, viewsets.ModelViewSet):
     #OK ordering_fields = ('epochsec', 'tleid' , )
     ordering_fields = ('epochsec')
     # to get Latest TLE: http://127.0.0.1:8000/sattle/tleserv/tles/?format=json&norad_number=33591&ordering=-epochsec
-    
+    #http://127.0.0.1:8000/sattle/tleserv/tles/?norad_number=33591&ordering=epochsec&page=2
     

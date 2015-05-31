@@ -85,6 +85,7 @@ WSGI_APPLICATION = 'sattle.wsgi.application'
 # googles: django how to non-default db
 # https://docs.djangoproject.com/en/1.8/topics/db/multi-db/
 
+# see doc about using non-default databases (Manually selecting a database)
 DATABASES = {
     # 'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',

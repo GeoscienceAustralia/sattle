@@ -45,10 +45,12 @@ def get_tle_by_norad(number):
 
     return order_tles  #related_tles
 
+#http://stackoverflow.com/questions/7750557/how-do-i-get-json-data-from-restful-service-using-python
 def get_latest_tle_from_restapi(number):
     """
     :param number: get the latest TLE  from Restful API
     :return: a TLE
+
     """
 
 
