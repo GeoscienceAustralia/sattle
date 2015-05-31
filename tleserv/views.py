@@ -17,9 +17,9 @@ class DefaultsMixin(object):
         # permissions.IsAuthenticated,
         permissions.IsAuthenticatedOrReadOnly,
     )
-    paginate_by = 25
+    paginate_by = 10
     paginate_by_param = 'page_size'
-    max_paginate_by = 100
+    max_paginate_by = 10
     filter_backends = (
         filters.DjangoFilterBackend,
         filters.SearchFilter,
@@ -44,6 +44,8 @@ class TleViewSet(DefaultsMixin, viewsets.ModelViewSet):
     serializer_class = TleSerializer
     filter_class = TleFilter
     search_fields = ('norad_number',  )
-    ordering_fields = ('epochsec', 'tleid' , )
+    #OK ordering_fields = ('epochsec', 'tleid' , )
+    ordering_fields = ('epochsec')
+    # to get Latest TLE: http://127.0.0.1:8000/sattle/tleserv/tles/?format=json&norad_number=33591&ordering=-epochsec
     
     

@@ -41,10 +41,15 @@ def get_tle_by_norad(number):
 
     order_tles = related_tles.order_by("-epochsec")  # -epochsec for descend
 
-    print order_tles[:3]  # three lates for debug
+    print order_tles[:3]  #take the first three as latest 3.
 
     return order_tles  #related_tles
 
+def get_latest_tle_from_restapi(number):
+    """
+    :param number: get the latest TLE  from Restful API
+    :return: a TLE
+    """
 
 
 def create_tle_entry(line1, line2):
