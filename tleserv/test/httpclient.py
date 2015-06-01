@@ -38,10 +38,13 @@ def get_tle_from_spacetrack(noradlist):
     # http://stackoverflow.com/questions/11892729/how-to-log-in-to-a-website-using-pythons-requests-module
     # Fill in your details here to be posted to the login form.
     SPTRACK_LOGIN_URL = 'https://www.space-track.org/ajaxauth/login'
-    QUERY_BASE_URL = "https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/NORAD_CAT_ID/%sorderby/TLE_LINE1%20ASC/format/tle"
+    QUERY_BASE_URL = "https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/NORAD_CAT_ID/%s/orderby/TLE_LINE1 ASC/format/tle"
+
+    #QUERY_BASE_URL="https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/NORAD_CAT_ID/25994, 27424, 39084/orderby/TLE_LINE1 ASC/format/tle"
+
     payload = {
         'identity': 'fei.zhang@ga.gov.au',
-        'password': '$Password'
+        'password': '$PASSWORD'
     }
 
     # Use 'with' to ensure the session context is closed after use.
@@ -51,16 +54,22 @@ def get_tle_from_spacetrack(noradlist):
         print p.text
 
         # An authorised request.
-        qurl = QUERY_BASE_URL % (noradlist)
+        qurl = QUERY_BASE_URL %(noradlist)
+        print qurl
         r = s.get(qurl)  # A protected web page url'
         print r.text
 
 
 if __name__ == "__main__":
+# USAGE: python httpclient.py 25994 27424 39084
+
     # print get_latest_tle(25682)
     #
     # print get_latest_tle(27424)
     #
     # get_active_satellite_norad()
 
-    get_tle_from_spacetrack(sys.argv[1])
+    norads=",".join(sys.argv[1:])
+    print norads
+    
+    get_tle_from_spacetrack(norads)
