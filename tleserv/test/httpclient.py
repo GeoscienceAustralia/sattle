@@ -4,6 +4,7 @@ Author:         Fei.Zhang@ga.gov.au
 Date:           2015-06-01
 """
 
+import os, sys
 import requests
 
 RESTFUL_BASE_URL = r'http://10.10.19.65:8000/sattle/tleserv'
@@ -33,10 +34,11 @@ def get_active_satellite_norad():
     print jdict
 
 
-def get_tle_from_spacetrack():
+def get_tle_from_spacetrack(noradlist):
     # http://stackoverflow.com/questions/11892729/how-to-log-in-to-a-website-using-pythons-requests-module
     # Fill in your details here to be posted to the login form.
-    LOGIN_URL='https://www.space-track.org/ajaxauth/login'
+    SPTRACK_LOGIN_URL = 'https://www.space-track.org/ajaxauth/login'
+    QUERY_BASE_URL = "https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/NORAD_CAT_ID/%sorderby/TLE_LINE1%20ASC/format/tle"
     payload = {
         'identity': 'fei.zhang@ga.gov.au',
         'password': '$Password'
@@ -44,13 +46,13 @@ def get_tle_from_spacetrack():
 
     # Use 'with' to ensure the session context is closed after use.
     with requests.Session() as s:
-        p = s.post(LOGIN_URL, data=payload)
-    # print the html returned or something more intelligent to see if it's a successful login page.
+        p = s.post(SPTRACK_LOGIN_URL, data=payload)
+        # print the html returned or something more intelligent to see if it's a successful login page.
         print p.text
 
-    # An authorised request.
-        URL="https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/NORAD_CAT_ID/25994/orderby/TLE_LINE1%20ASC/format/tle"
-        r = s.get( URL) # A protected web page url'
+        # An authorised request.
+        qurl = QUERY_BASE_URL % (noradlist)
+        r = s.get(qurl)  # A protected web page url'
         print r.text
 
 
@@ -61,5 +63,4 @@ if __name__ == "__main__":
     #
     # get_active_satellite_norad()
 
-    get_tle_from_spacetrack()
-
+    get_tle_from_spacetrack(sys.argv[1])
