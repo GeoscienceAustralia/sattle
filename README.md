@@ -5,20 +5,18 @@ Satellite TLE data service.
 
 Restful API
 
-Admin customise
+Admin Web UI
 
 Commandline tools
 
-TLE utils
 
 Apache integration
+
 AWS code deploy
 
-
-.ignore
-
 setup
+
 unit test
 
-Mysql, 
-broad X deep
+Postgres and Mysql 
+Broad X Deep
