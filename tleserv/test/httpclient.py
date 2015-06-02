@@ -23,7 +23,7 @@ class TleClient:
         Find all active satellites in the TLE system
         :return: a listbof norad numbers
         """
-        sat_query_url = self.rest_base_url + "/satellites/?format=json&isactive=rue"
+        sat_query_url = self.rest_base_url + "/satellites/?format=json&isactive=True"
 
         response = requests.get(sat_query_url)
         jdict = response.json()
