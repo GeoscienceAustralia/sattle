@@ -25,7 +25,8 @@ class SatelliteFilter(django_filters.FilterSet):
     
     class Meta:
         model = Satellite
-        fields = ('isactive', 'satname', )
+        #fields = ('isactive', 'satname', )
+        fields = ('isactive',)
 
 
 class TleFilter(django_filters.FilterSet):

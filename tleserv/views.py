@@ -32,9 +32,9 @@ class SatelliteViewSet(DefaultsMixin, viewsets.ModelViewSet):
     
     queryset = Satellite.objects.order_by('norad_number')
     serializer_class = SatelliteSerializer
-    #filter_class = SatelliteFilter
-    search_fields = ('satname', )
-    ordering_fields = ('norad_number', 'satname', )
+    filter_class = SatelliteFilter
+    search_fields = ('isactive' )
+    ordering_fields = ('norad_number',)     # 'satname', )
     
 
 class TleViewSet(DefaultsMixin, viewsets.ModelViewSet):
