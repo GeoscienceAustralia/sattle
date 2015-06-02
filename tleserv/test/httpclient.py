@@ -11,6 +11,8 @@ import requests
 
 # Anonymous readable Restful Service end-point base_url
 RESTFUL_BASE_URL = r'http://10.10.19.65:8000/sattle/tleserv'
+# OR connect to a proper http server
+#RESTFUL_BASE_URL = r'http://127.0.0.1:80/sattle/tleserv'
 
 
 class TleClient:
