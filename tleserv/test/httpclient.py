@@ -124,7 +124,7 @@ if __name__ == "__main__":
         tle3rd=get_tle_from_spacetrack(eachn)
         print tle3rd.splitlines() # print in one line
 
-    # get from third party site spacetrack
+    # get from website spacetrack
     print str(noradlist)
     norads= str(noradlist)[1:-1]
     print norads
