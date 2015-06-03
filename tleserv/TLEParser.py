@@ -33,6 +33,7 @@ class TLE:
         self._md5sum()
         self.get_epoc_seconds()
         self.get_datetime()
+        self.get_tle_age_hours()
 
     # -------------------
     def __str__(self):
@@ -168,11 +169,11 @@ class TLE:
     def get_tle_age_hours(self):
         self.age= (time.time() - self.epoc_seconds)/3600
 
-        print self.age
+        #debug print self.age
 
         return self.age
 
-def parse_tle_lines(self, lines):
+def parse_tle_lines( lines):
     """
     parse an input TLE file to produce a list of TLE tupples records
     :param tlefile:
@@ -206,7 +207,7 @@ def parse_tle_lines(self, lines):
         if line1 is not None and line2 is not None:  # got a pair of tle
             tle = (line1.strip('\r\n '), line2.strip('\r\n '))  # strip leading and trailng \r or \n or white space
             tle_list.append(tle)
-            self.logger.debug("A TLE pair is found: %s", tle)
+            print("A TLE pair is found: %s", tle)
 
             # reset the 2 line holders
             line1 = None
