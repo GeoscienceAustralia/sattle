@@ -9,6 +9,8 @@ import time
 
 import requests
 
+from .. import TLEParser
+
 # Anonymous readable Restful Service end-point base_url
 RESTFUL_BASE_URL = r'http://10.10.19.65:8000/sattle/tleserv'
 # OR connect to a proper http server
@@ -108,6 +110,7 @@ def get_tle_from_spacetrack( noradlist ):
 
     return res
 
+
 ################################################################################
 if __name__ == "__main__":
     
@@ -122,13 +125,21 @@ if __name__ == "__main__":
     for eachn in noradlist:
         tle = tleclt.get_latest_tle(eachn)
         print tle
-        
-        tle3rd=get_tle_from_spacetrack(eachn)
-        print tle3rd.splitlines() # print in one line
 
+        # too many query may be throttled by the website
+        #tle3rd=get_tle_from_spacetrack(eachn)
+        #print tle3rd.splitlines() # print in one line
+
+#############################################################################
     # get from website spacetrack
     print str(noradlist)
     norads= str(noradlist)[1:-1]
     print norads
 
-    print get_tle_from_spacetrack(norads)
+    tlelines= get_tle_from_spacetrack(norads)
+
+    tlepairs = TLEParser.parse_tle_lines(tlelines)
+    for atle in tlepairs:
+        tleobj = TLEParser.TLE(atle)
+        print tleobj
+

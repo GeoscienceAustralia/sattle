@@ -13,6 +13,11 @@ class TLE:
     """
 
     def __init__(self, tles, path2tlefile=None):
+        """
+        :param tles: =(line1, line2) tupple.
+        :param path2tlefile: the file where the tle pair is from
+        :return:
+        """
         self.line1 = tles[0]
         self.line2 = tles[1]
 
@@ -166,6 +171,48 @@ class TLE:
         print self.age
 
         return self.age
+
+def parse_tle_lines(self, lines):
+    """
+    parse an input TLE file to produce a list of TLE tupples records
+    :param tlefile:
+    :return: TLE list
+    """
+
+    # try: # if input is a file
+    #     fp = open(tlefile, "r")
+    #     lines = fp.readlines()
+    # except IOError:
+    #     self.logger.error("Error: failed to find the file %s or read data", tlefile)
+    # finally:
+    #     fp.close()
+
+    tle_list = []  # to be returned
+
+    line1 = None
+    line2 = None
+    for aline in lines:
+        if aline.startswith("1 ") and len(
+                aline) >= 69:  # the length of a TLE line is 70 including the trailing newline char \n
+            line1 = aline
+        elif aline.startswith("2 ") and len(
+                aline) >= 69:  # the length of a TLE line is 70 including the trailing newline char \n
+            line2 = aline
+        else:
+            # This line is a satellite name descrip for example: ISS (ZARYA)
+            # self.logger.debug("TLE subject line: %s", aline)
+            pass
+
+        if line1 is not None and line2 is not None:  # got a pair of tle
+            tle = (line1.strip('\r\n '), line2.strip('\r\n '))  # strip leading and trailng \r or \n or white space
+            tle_list.append(tle)
+            self.logger.debug("A TLE pair is found: %s", tle)
+
+            # reset the 2 line holders
+            line1 = None
+            line2 = None
+
+    return tle_list
 
 
 ###########################################################################################
