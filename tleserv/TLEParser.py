@@ -207,7 +207,7 @@ def parse_tle_lines( lines):
         if line1 is not None and line2 is not None:  # got a pair of tle
             tle = (line1.strip('\r\n '), line2.strip('\r\n '))  # strip leading and trailng \r or \n or white space
             tle_list.append(tle)
-            print("A TLE pair is found: %s", tle)
+            print "A TLE pair is found: %s, %s"%(tle[0],tle[1])
 
             # reset the 2 line holders
             line1 = None
