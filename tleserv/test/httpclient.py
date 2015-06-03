@@ -9,7 +9,7 @@ import time
 
 import requests
 
-from .. import TLEParser
+from tleserv import TLEParser
 
 # Anonymous readable Restful Service end-point base_url
 RESTFUL_BASE_URL = r'http://10.10.19.65:8000/sattle/tleserv'
@@ -92,7 +92,7 @@ def get_tle_from_spacetrack( noradlist ):
     SPTRACK_LOGIN_URL = 'https://www.space-track.org/ajaxauth/login'
     payload = {
         'identity': 'fei.zhang@ga.gov.au',
-        'password': '$PASSWORD'  # not revealed in gitpub
+        'password': 'NOTRevealedIngitpub' 
     }
 
     # Use 'with' to ensure the session context is closed after use.
@@ -136,10 +136,13 @@ if __name__ == "__main__":
     norads= str(noradlist)[1:-1]
     print norads
 
-    tlelines= get_tle_from_spacetrack(norads)
+    tles= get_tle_from_spacetrack(norads)
 
-    tlepairs = TLEParser.parse_tle_lines(tlelines)
+    tlelines=tles.split('\n')
+    #Debug print tlelines
+
+    tlepairs = TLEParser.parse_tle_lines(tlelines) #,'FromSpacetrack')
     for atle in tlepairs:
         tleobj = TLEParser.TLE(atle)
-        print tleobj
+        print (tleobj.noradid, tleobj.age)
 
