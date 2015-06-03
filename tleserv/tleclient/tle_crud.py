@@ -80,14 +80,14 @@ def create_tle_entry(line1, line2):
 if __name__ == "__main__":
     # setup django project
     # os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
-    os.sys.path.append("../..")
-
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sattle.settings")
-
-    django.setup()
-    ################################################
-    from tleserv.models import Satellite
-    from tleserv.models import Tle
+    # os.sys.path.append("../..")
+    #
+    # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sattle.settings")
+    #
+    # django.setup()
+    # ################################################
+    # from tleserv.models import Satellite
+    # from tleserv.models import Tle
 
     norad_list=get_satellite_norad_numbers()
     print norad_list

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #  python2.7 with django* installed
-#  To test run the Web server
+#  To tleclient run the Web server
 #  ./manage.py runserver 0.0.0.0:8000
 
 import os

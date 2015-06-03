@@ -4,7 +4,7 @@
 ###############################################################################
 # Purpose: one script install, config, django, posgres, gunicorn, nginx,
 # Todo: Virtualenv environment
-# Todo: test a different user with sudo privil
+# Todo: tleclient a different user with sudo privil
 # Todo: Refactor, Centos/Redhat
 # Todo: Restful API and other apps.
 #
