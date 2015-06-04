@@ -114,6 +114,16 @@ class TLELoader:
         """
         self.logger.debug( str(atleobj))
 
+        #try to see if the same TLE already exists?
+        tle=Tle.objects.get(md5sum=atleobj.md5sum)
+        print tle
+        if len(tle)<1:
+            print "This TLE has not been in DB yet, to do insert"
+        else:
+            print "skip insert, will return -1"
+            return -1
+
+
         sat_inst = Satellite.objects.get(pk=atleobj.noradid) #get one object
 
         TleModelObj = Tle()
@@ -204,10 +214,10 @@ if __name__ == "__main__":
         norads = aloader.get_satellite_norads()  # testing the get_satellite_norads function
         print norads
     else:
-        print "To load TLE data from files into DB: %s %s" % (sys.argv[0], "/path2/tlefiles ")
+        print "To load TLE data from files into DB: %s %s" % (sys.argv[0], str(sys.argv[1:]))
         for tlefile in sys.argv[1:]:
             print "Processing " + tlefile
-            aloader.load(tlefile,["postgres"])  # this will load tle into mysql db
+            aloader.load(tlefile,["postgres"])  # this will load tle into db
 
 
 
