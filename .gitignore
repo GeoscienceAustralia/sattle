@@ -26,4 +26,6 @@ nosetests.xml
 .pydevproject
 OldWorks
 MANIFEST
-log
+log*
+zprivate
+scratch*
