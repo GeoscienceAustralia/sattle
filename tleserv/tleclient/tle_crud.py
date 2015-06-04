@@ -35,7 +35,6 @@ def get_tle_by_norad(number):
     :param number: satellite norad_number
     :return: a set of TLE records-objects
     """
-    s = Satellite.objects.get(pk=number) #get one object
 
     related_tles = s.tle_set.all()  # get related objects
 
@@ -57,12 +56,14 @@ def get_latest_tle_from_restapi(number):
 def create_tle_entry(line1, line2):
     """ define a new tle record and insert into the table
     """
+    norad =37849
+    sat_ins = Satellite.objects.get(pk=norad) #get one object
 
     a_tle = Tle()
     a_tle.line1 = "1 37849U 11061A   15138.00000000  .00000000  00000-0  45447-5 2    02"
     a_tle.line2 = "2 37849 098.6970 077.8602 0001252 092.0306 348.7111 14.19552114184104"
 
-    a_tle.norad_number = sat_inst[0]
+    a_tle.norad_number = sat_ins
     a_tle.status = True
     a_tle.epochsec = 1431907200.0000000000
     a_tle.md5sum = "97d1bdc6f3a150977d7eeefdea56723g"

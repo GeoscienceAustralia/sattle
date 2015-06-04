@@ -28,7 +28,7 @@ class Tle(models.Model):
     tle_source = models.IntegerField()
     status = models.BooleanField()
     tle_dt_utc = models.DateTimeField()
-    inp_dt_utc = models.DateTimeField(blank=True, null=True)
+    inp_dt_utc = models.DateTimeField(blank=True, null=True) # change to models.DateTimeField(default=timezone.now)
     path2file = models.CharField(max_length=256)
     md5sum = models.CharField(unique=True, max_length=32)
 
