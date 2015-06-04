@@ -1,20 +1,23 @@
 """
-Description:    Get Latest TLE for satellite Norad_number, using http client to consume Restful web service APIs
-Author:         Fei.Zhang@ga.gov.au
-Date:           2015-06-01
+Description:
+        Get Latest TLE for satellite Norad_number, using http client to consume Restful web service APIs.
+        No backend database knowledge nor connection credentials are required. All is done in the service tier.
+
+Purpose:
+        Example code for users to write their client programs.
+
+Author: Fei.Zhang@ga.gov.au
+Date:   2015-06-05
 """
 
 import sys
 import time
-
 import requests
 
+# connect to a proper http server
 # Anonymous readable Restful Service end-point base_url
 RESTFUL_BASE_URL = r'http://10.10.19.65:8000/sattle/tleserv'
 RESTFUL_BASE_URL = r'http://ec2-52-64-92-80.ap-southeast-2.compute.amazonaws.com/sattle/tleserv'
-# OR connect to a proper http server
-#RESTFUL_BASE_URL = r'http://127.0.0.1:80/sattle/tleserv'
-
 
 class TleClient:
     def __init__(self, restful_burl):

@@ -1,7 +1,7 @@
 #!/bin/env python2.7
 """
 Description:
-    Use Django models and settings.py to insert new TLE data from file to DB instances.
+    Use Django models and settings.py to insert new TLE data from file to DB targets.
 
 Author: fei.zhang@ga.gov.au
 
