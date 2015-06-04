@@ -126,22 +126,23 @@ class TLELoader:
         TleModelObj.epochsec =  atleobj.epoc_seconds
         TleModelObj.md5sum = atleobj.md5sum
         TleModelObj.path2file = atleobj.path2file  #"/data/ephemeris/source/nasa/20150519.drl.tle"
-        TleModelObj.tle_dt_utc = "2015-05-18 00:00:00+00"  #convert? atleobj.tledt   #"2015-05-18 00:00:00+00"
+        TleModelObj.tle_dt_utc = atleobj.tledt   #"2015-05-18 00:00:00+00"
         TleModelObj.tle_source = 0
         TleModelObj.inp_dt_utc = timezone.now()  # OK "2015-05-19 10:40:02.685394+00"
         # todo: make default timesatmp in model and leave this unpoulated?
 
+        new_tleid=-1
         try:
             TleModelObj.save()
-            self.logger.info(TleModelObj.tleid, TleModelObj.inp_dt_utc)
-            return TleModelObj.tleid
+            self.logger.info("Successful TLE save() into DB: %s", str(TleModelObj))
+            new_tleid = TleModelObj.tleid
         except Exception , why:
             self.logger.error("Django save Tle failed because: %s", str(why))
         finally:
             # do what?
             pass
 
-        return -1 
+        return new_tleid
 
     def get_satellite_norads(self, db=None):
         """
@@ -190,12 +191,11 @@ class TLELoader:
         return 0
 
 
-##################################################################################################################
-# How to test run to get_statellite_norads:    [ads@pe-test tlefetch]$ ./tle_loader.py
+################################################################################################################
 # How to insert many TLE files:
 # [ads@pe-test tle2db]$ python tle_loader.py /eoancillarydata/sensor-specific/CELESTRAK_TLE/*.txt &>> /tmp/my.log
 # OR   find /eoancillarydata -name "*.txt"  -exec ./tle_loader.py {} \; &> stdoe.log
-# #######################################################
+#
 if __name__ == "__main__":
 
     aloader = TLELoader()

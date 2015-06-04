@@ -144,7 +144,7 @@ class TLE:
         # this works well and correctly for Python2.7 but not for python2.6
         # year_sec = (datetime.datetime(eyear, 1, 1, 0, 0, 0, 0) - datetime.datetime(1970, 1, 1)).total_seconds()
 
-        tstring = '%s-01-01 00:00:00' % (eyear)  # get the epock seconds until the very start of the eyear
+        tstring = '%s-01-01 00:00:00' % (eyear)  # get the epoch seconds until the very start of the eyear
         year_sec = int(time.mktime(time.strptime(tstring, '%Y-%m-%d %H:%M:%S'))) - time.altzone
         # - time.timezone have problem in winter datetime
 
@@ -162,7 +162,7 @@ class TLE:
         :return: A datetime string like: 2015-04-06T05:01:18
         to be inserted into the tle table for human read.
         """
-        self.tledt = time.strftime("%Y-%m-%dT%H:%M:%S +0000", time.gmtime(self.epoc_seconds))  # +0000 is the UTC offset
+        self.tledt = time.strftime("%Y-%m-%d %H:%M:%S+00", time.gmtime(self.epoc_seconds))  # +0000 is the UTC offset
 
         return self.tledt
 
