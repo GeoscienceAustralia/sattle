@@ -116,8 +116,10 @@ class TLELoader:
 
         #try to see if the same TLE already exists?
         tle=Tle.objects.get(md5sum=atleobj.md5sum)
-        print tle
-        if len(tle)<1:
+        self.logger.info(str(tle))
+        self.logger.info(type(tle))
+
+        if not tle:
             print "This TLE has not been in DB yet, to do insert"
         else:
             print "skip insert, will return -1"
@@ -196,7 +198,10 @@ class TLELoader:
             # make tle dj-model obj, and save it
             for atle in tle_list:
                 new_tleid=self.create_tle_record(atle)
-                self.logger.info("new TLE record was created with tleid=%s", str(new_tleid))
+                if new_tleid>0:
+                    self.logger.info("new TLE record was created with tleid=%s", str(new_tleid))
+                else:
+                    self.logger.info("No TLE record was created  !!!!!!! duplicate exists already")
 
         return 0
 
