@@ -114,7 +114,7 @@ class TLELoader:
         """
         self.logger.debug( str(atleobj))
 
-        sat_inst = Satellite.objects.get(atleobj.noradid) #get one object
+        sat_inst = Satellite.objects.get(pk=atleobj.noradid) #get one object
 
         TleModelObj = Tle()
 
@@ -126,16 +126,22 @@ class TLELoader:
         TleModelObj.epochsec =  atleobj.epoc_seconds
         TleModelObj.md5sum = atleobj.md5sum
         TleModelObj.path2file = atleobj.path2file  #"/data/ephemeris/source/nasa/20150519.drl.tle"
-        TleModelObj.tle_dt_utc = atleobj.tledt   #"2015-05-18 00:00:00+00"
+        TleModelObj.tle_dt_utc = "2015-05-18 00:00:00+00"  #convert? atleobj.tledt   #"2015-05-18 00:00:00+00"
         TleModelObj.tle_source = 0
         TleModelObj.inp_dt_utc = timezone.now()  # OK "2015-05-19 10:40:02.685394+00"
         # todo: make default timesatmp in model and leave this unpoulated?
 
-        TleModelObj.save()
+        try:
+            TleModelObj.save()
+            self.logger.info(TleModelObj.tleid, TleModelObj.inp_dt_utc)
+            return TleModelObj.tleid
+        except Exception , why:
+            self.logger.error("Django save Tle failed because: %s", str(why))
+        finally:
+            # do what?
+            pass
 
-        self.logger.info(TleModelObj.tleid, TleModelObj.inp_dt_utc)
-
-        return TleModelObj.tleid
+        return -1 
 
     def get_satellite_norads(self, db=None):
         """
@@ -154,7 +160,7 @@ class TLELoader:
         return norad_numbers
 
     # --------------------------------------------------------------------
-    def load(self, tlefile, dbtargets):
+    def load(self, tlefile, dbtargets=None):
         """Given a tlefile, parse it to get the TLE pairs, derive the required metadata and save the tle into dbtargets
         :param tlefile: a file with TLE/3LEs typically downloaded from providers.
         :param dbtargets: MySQL and/or Postgres configures in django settings.py
@@ -163,13 +169,13 @@ class TLELoader:
 
         tle_source = 0  # deprecated: downloading source: CELESTRAC, USGS, NASA are in the path2/filename
         for db in dbtargets:
-
+            print db
             # A list of Norad Number, corresponding to RMS active satellites in the table satellite
             # ((25682L, 'LANDSAT-7'), (39084L, 'LANDSAT-8'), (27424L, 'AQUA'), (25994L, 'TERRA'),
             # (25338L, 'NOAA-15'), (28654L, 'NOAA-18'), (33591L, 'NOAA-19'), (37849L, 'SUOMI-NPP'))
             # sat_filter = [25338, 25682, 25994, 27424, 28654,33591,  37849,  39084  ]
 
-            sat_filter = self.get_satellite_norads(db)
+            sat_filter = self.get_satellite_norads()
 
             # parse TLE file and filter for what we want according to NORA_ID of active satellite
             tle_list = self.get_meta_tle(tlefile, sat_filter)
@@ -182,7 +188,6 @@ class TLELoader:
                 self.logger.info("new TLE record was created with tleid=%s", str(new_tleid))
 
         return 0
-
 
 
 ##################################################################################################################
@@ -202,7 +207,7 @@ if __name__ == "__main__":
         print "To load TLE data from files into DB: %s %s" % (sys.argv[0], "/path2/tlefiles ")
         for tlefile in sys.argv[1:]:
             print "Processing " + tlefile
-            aloader.load(tlefile)  # this will load tle into mysql db
+            aloader.load(tlefile,["postgres"])  # this will load tle into mysql db
 
 
 

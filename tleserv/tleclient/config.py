@@ -18,14 +18,14 @@ import logging
 import logging.handlers
 
 # aws_mysql = {'user': 'rmsuser', 'host': 'localhost', 'dbname': 'rmsdb', 'password': 'rms@g.008c', }
-if os.path.exists('/etc/fetch.conf.d/dbconf.yaml'):
-    logging.getLogger().info("Use file1: /etc/fetch.conf.d/dbconf.yaml")
-    p2yamlf = '/etc/fetch.conf.d/dbconf.yaml'
-elif os.path.exists(os.path.expanduser('~/etc/fetch.conf.d/dbconf.yaml')):
-    logging.getLogger().info("Use file2: ~/etc/fetch.conf.d/dbconf.yaml")
+if os.path.exists(os.path.expanduser('~/etc/fetch.conf.d/dbconf.yaml')):
+    logging.getLogger().info("Use file: ~/etc/fetch.conf.d/dbconf.yaml")
     p2yamlf = os.path.expanduser('~/etc/fetch.conf.d/dbconf.yaml')
+elif os.path.exists('/etc/fetch.conf.d/dbconf.yaml'):
+    logging.getLogger().info("Use file: /etc/fetch.conf.d/dbconf.yaml")
+    p2yamlf = '/etc/fetch.conf.d/dbconf.yaml'
 else:
-    logging.getLogger().error("You must configure the dbconf.yaml in /etc/fetch.conf.d or ~/etc/fetch.conf.d ")
+    logging.getLogger().error("You must have ~/etc/fetch.conf.ddbconf.yaml or /etc/fetch.conf.d/dbconf.yaml ")
 
 with open(p2yamlf, 'r') as f: mydbs = yaml.load(f)
 
