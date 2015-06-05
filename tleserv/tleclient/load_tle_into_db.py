@@ -115,15 +115,22 @@ class TLELoader:
         self.logger.debug( str(atleobj))
 
         #try to see if the same TLE already exists?
-        tle=Tle.objects.get(md5sum=atleobj.md5sum)
-        self.logger.info(str(tle))
-        self.logger.info(type(tle))
+        tle= None
+        try:
+            tle=Tle.objects.get(md5sum=atleobj.md5sum)
+        except Exception, why:
+            self.logger.debug("Failed to retriev a TLE with md5sum because of %s",str(why))
+        finally:
+            pass
 
-        if not tle:
-            print "This TLE has not been in DB yet, to do insert"
-        else:
-            print "skip insert, will return -1"
+        self.logger.debug(str(tle))
+        self.logger.debug(type(tle))
+
+        if tle: #exists in the table
+            self.logger.info("skip this TLE insert, will return -1")
             return -1
+        else:
+            self.logger.info( "This TLE is not in DB yet, will be inserted" )
 
 
         sat_inst = Satellite.objects.get(pk=atleobj.noradid) #get one object

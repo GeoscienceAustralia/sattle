@@ -36,11 +36,12 @@ def get_tle_by_norad(number):
     :return: a set of TLE records-objects
     """
 
+    s=Satellite.objects.get(pk=number)
     related_tles = s.tle_set.all()  # get related objects
 
     order_tles = related_tles.order_by("-epochsec")  # -epochsec for descend
 
-    print order_tles[:3]  #take the first three as latest 3.
+    #print order_tles[:3]  #take the first three as latest 3.
 
     return order_tles  #related_tles
 

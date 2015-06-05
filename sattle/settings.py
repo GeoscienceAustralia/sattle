@@ -104,8 +104,12 @@ DATABASES = {
         'PASSWORD': 'daf',
         'HOST': '127.0.0.1',
         'PORT': '5432',
+         },
+    'default-mysql':{
+        'ENGINE': 'django.db.backends.mysql', 
+        'OPTIONS': { 'read_default_file': '~/etc/mysql.cnf', },
+        }
 
-                }
 }
 
 

@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     sat = Satellite(norad_number=99999, satname="LANDSAT-9")
     sat.rms_priority = 20
-    sat.isactive = True
+    sat.isactive = False #True 
     sat.save()
 #todo: why duplicate norad_number=99999 no error?
 
