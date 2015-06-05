@@ -148,7 +148,7 @@ class TLELoader:
         TleModelObj.tle_dt_utc = atleobj.tledt   #"2015-05-18 00:00:00+00"
         TleModelObj.tle_source = 0
         TleModelObj.inp_dt_utc = timezone.now()  # OK "2015-05-19 10:40:02.685394+00"
-        # todo: make default timesatmp in model and leave this unpoulated?
+        # can make default timesatmp in model and leave this unpoulated?
 
         new_tleid=-1
         try:
@@ -180,38 +180,35 @@ class TLELoader:
         return norad_numbers
 
     # --------------------------------------------------------------------
-    def load(self, tlefile, dbtargets=None):
-        """Given a tlefile, parse it to get the TLE pairs, derive the required metadata and save the tle into dbtargets
+    def load(self, tlefile):
+        """Given a tlefile, parse it to get the TLE pairs, derive the required metadata and save the tle into default db
         :param tlefile: a file with TLE/3LEs typically downloaded from providers.
-        :param dbtargets: MySQL and/or Postgres configures in django settings.py
         :return:
         """
 
         tle_source = 0  # deprecated: downloading source: CELESTRAC, USGS, NASA are in the path2/filename
-        for db in dbtargets:
-            print db
-            # A list of Norad Number, corresponding to RMS active satellites in the table satellite
-            # ((25682L, 'LANDSAT-7'), (39084L, 'LANDSAT-8'), (27424L, 'AQUA'), (25994L, 'TERRA'),
-            # (25338L, 'NOAA-15'), (28654L, 'NOAA-18'), (33591L, 'NOAA-19'), (37849L, 'SUOMI-NPP'))
-            # sat_filter = [25338, 25682, 25994, 27424, 28654,33591,  37849,  39084  ]
 
-            sat_filter = self.get_satellite_norads()
+        # A list of Norad Number, corresponding to RMS active satellites in the table satellite
+        # ((25682L, 'LANDSAT-7'), (39084L, 'LANDSAT-8'), (27424L, 'AQUA'), (25994L, 'TERRA'),
+        # (25338L, 'NOAA-15'), (28654L, 'NOAA-18'), (33591L, 'NOAA-19'), (37849L, 'SUOMI-NPP'))
+        # sat_filter = [25338, 25682, 25994, 27424, 28654,33591,  37849,  39084  ]
 
-            # parse TLE file and filter for what we want according to NORA_ID of active satellite
-            tle_list = self.get_meta_tle(tlefile, sat_filter)
+        sat_filter = self.get_satellite_norads()
 
-            self.logger.info("After applying the filter, %s TLEs to be inserted into DB", len(tle_list))
+        # parse TLE file and filter for what we want according to NORA_ID of active satellite
+        tle_list = self.get_meta_tle(tlefile, sat_filter)
 
-            # make tle dj-model obj, and save it
-            for atle in tle_list:
-                new_tleid=self.create_tle_record(atle)
-                if new_tleid>0:
-                    self.logger.info("new TLE record was created with tleid=%s", str(new_tleid))
-                else:
-                    self.logger.info("No TLE record was created  !!!!!!! duplicate exists already")
+        self.logger.info("After applying the filter, %s TLEs to be inserted into DB", len(tle_list))
+
+        # make tle dj-model obj, and save it
+        for atle in tle_list:
+            new_tleid=self.create_tle_record(atle)
+            if new_tleid>0:
+                self.logger.info("new TLE record was created with tleid=%s", str(new_tleid))
+            else:
+                self.logger.info("No TLE record was created  !!!!!!! duplicate exists already")
 
         return 0
-
 
 ################################################################################################################
 # How to insert many TLE files:
@@ -229,7 +226,7 @@ if __name__ == "__main__":
         print "To load TLE data from files into DB: %s %s" % (sys.argv[0], str(sys.argv[1:]))
         for tlefile in sys.argv[1:]:
             print "Processing " + tlefile
-            aloader.load(tlefile,["postgres"])  # this will load tle into db
+            aloader.load(tlefile)  # this will load tle into default db in the settings py file
 
 
 

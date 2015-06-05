@@ -45,6 +45,18 @@ def get_tle_by_norad(number):
 
     return order_tles  #related_tles
 
+def get_latest_tle_by_sqlquery(number):
+    """
+    :param number: norad_number
+    :return:A TLE row object
+    """
+
+    atle=Tle.objects.raw("select * from tle where norad_number=%s order by -epochsec limit 2",[number])
+
+    print atle
+
+    return atle[0]
+
 #http://stackoverflow.com/questions/7750557/how-do-i-get-json-data-from-restful-service-using-python
 def get_latest_tle_from_restapi(number):
     """
@@ -52,6 +64,7 @@ def get_latest_tle_from_restapi(number):
     :return: a TLE
 
     """
+    return "see restful_client.py"
 
 
 def create_tle_entry(line1, line2):
@@ -101,7 +114,11 @@ if __name__ == "__main__":
             print ("The Satellite %s has this LATEST TLE %s " %(noradn, tles[0]))
         except IndexError as indexe:
             print indexe.message
+        finally:
+            pass
 
+        print("Now try to use a raw SQL query.....")
+        get_latest_tle_by_sqlquery( noradn )
 
 # define a new tle record and insert into the table
     #create_tle_entry("line1","line2")
