@@ -91,12 +91,12 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # },
-    'default-0': {
+    'default-dev0': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         #'NAME': 'resttle',
         'NAME': 'sattle',
     },
-    # ubu and aws
+    # postgres pe-test,ubu and aws
     'default':{
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'rmsdb',
@@ -105,6 +105,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '5432',
          },
+    #mysql
     'default-mysql':{
         'ENGINE': 'django.db.backends.mysql', 
         'OPTIONS': { 'read_default_file': '~/etc/mysql.cnf', },
