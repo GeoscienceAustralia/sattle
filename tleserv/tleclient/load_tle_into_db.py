@@ -17,8 +17,9 @@ from django.utils import timezone
 
 # The next 3 lines are essential to setup django project with DB connection
 # os.sys.path.append("/home/fzhang/PycharmProjects/sattle")
-os.sys.path.append("../..")
-os.environ["DJANGO_SETTINGS_MODULE"] = "sattle.settings"
+#os.sys.path.append("../..")
+#os.environ["DJANGO_SETTINGS_MODULE"] = "sattle.mysql_settings"
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sattle.settings")
 django.setup()
 
 from tleserv.models import Satellite
@@ -215,6 +216,9 @@ class TLELoader:
 # [ads@pe-test tle2db]$ python tle_loader.py /eoancillarydata/sensor-specific/CELESTRAK_TLE/*.txt &>> /tmp/my.log
 # OR   find /eoancillarydata -name "*.txt"  -exec ./tle_loader.py {} \; &> stdoe.log
 #
+# To overide the default setting:
+# export DJANGO_SETTINGS_MODULE="sattle.mysql_settings";  python tleserv/tleclient/load_tle_into_db.py ./zprivate/spacetrack.tle
+# to use default,  unset DJANGO_SETTINGS_MODULE;  python tleserv/tleclient/load_tle_into_db.py ./zprivate/spacetrack.tle
 if __name__ == "__main__":
 
     aloader = TLELoader()

@@ -48,14 +48,14 @@ def get_tle_by_norad(number):
 def get_latest_tle_by_sqlquery(number):
     """
     :param number: norad_number
-    :return:A TLE row object
+    :return:A TLE row model object, which should be the LATEST TLE according to epochsec
     """
 
     atle=Tle.objects.raw("select * from tle where norad_number=%s order by -epochsec limit 2",[number])
+    
+    #tle is a queryset 
 
-    print atle
-
-    return atle[0]
+    return atle[0]  # the latest TLE object from the DB query
 
 #http://stackoverflow.com/questions/7750557/how-do-i-get-json-data-from-restful-service-using-python
 def get_latest_tle_from_restapi(number):
@@ -118,7 +118,8 @@ if __name__ == "__main__":
             pass
 
         print("Now try to use a raw SQL query.....")
-        get_latest_tle_by_sqlquery( noradn )
+        latest_tle=get_latest_tle_by_sqlquery( noradn )
+        print latest_tle
 
 # define a new tle record and insert into the table
     #create_tle_entry("line1","line2")
