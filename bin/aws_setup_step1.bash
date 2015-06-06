@@ -151,7 +151,7 @@ if [ $retval -ne 0 ]; then
 echoerr " Failed db migration !"
 else
 echoerr " create a superuser"
-python manage.py createsuperuser
+# Not again  python manage.py createsuperuser
 fi
 
 # Step Nine: Configure Gunicorn
@@ -168,7 +168,7 @@ echoerr "Step Ten: Configure NGINX"
 
 mkdir /home/$WHOAMI/django/static/
 
-sudo cp -r /usr/local/lib/python2.7/dist-packages/django/contrib/admin/static/admin/ /home/$WHOAMI/django/static/
+sudo cp -r /usr/local/lib/python2.7/site-packages/django/contrib/admin/static/admin/ /home/$WHOAMI/django/static/
 
 sudo echo "
 server {
