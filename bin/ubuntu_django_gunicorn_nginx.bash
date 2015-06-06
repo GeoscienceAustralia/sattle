@@ -1,6 +1,6 @@
 #!/bin/bash
 # adapted from https://github.com/sean-moore/genesis
-
+#https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-django-with-postgres-nginx-and-gunicorn
 ###############################################################################
 # Purpose: one script install, config, django, posgres, gunicorn, nginx,
 # Todo: Virtualenv environment
@@ -10,15 +10,26 @@
 #
 ###############################################################################
 
+# assume git has been installed so that this script can be pulled from github
+
 # User Variables (edit these)
+
+PROJECTS_DIR=$HOME/django  #where the djangos projects will be created
+
 DJANGO_PROJECT_NAME='myproject2' # name of your django project
+
 POSTGRES_DB_NAME='mydb2' # name of the database that your django project will use
+
+
+echo $PROJECTS_DIR
+# exit
 
 # BEGIN SCRIPT
 
 # don't run this as root
+
 WHOAMI=`whoami`
-if [ "${WHOAMI,,}" == "root" ]; then
+if [ "${WHOAMI}" == "root" ]; then
 	echo "Don't run this script with sudo or as root."
 	exit
 fi
@@ -28,7 +39,7 @@ echoerr() { echo "$@" 1>&2; }
 
 # clean up and trapping functions
 cleanup() {
-  rm -f /home/$WHOAMI/django/
+  rm -f $PROJECTS_DIR/$DJANGO_PROJECT_NAME
   sudo rm /etc/nginx/sites-enabled/*
   sudo rm /etc/nginx/sites-available/$DJANGO_PROJECT_NAME
   return $?
@@ -44,12 +55,7 @@ control_c() {
 trap control_c SIGINT
 
 # activate sudo for this session
-if [ 1 -eq 1 ] # sudo echoerr "This script needs sudo access..."; then
-then
-	echoerr "Access Granted. Genesis starting..."
-else
-	exit
-fi
+# test if user has sudo priv
 
 # Step One: Update Packages
 echoerr "Step One: Update Packages"
@@ -104,14 +110,14 @@ sudo su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O  $WHOAMI"
 # Step Eight: Create a Django Project
 echoerr "Step Eight: Create a Django Project"
 
-mkdir /home/$WHOAMI/django/
-cd /home/$WHOAMI/django/
+mkdir $PROJECTS_DIR/
+cd $PROJECTS_DIR/
 
 django-admin.py startproject $DJANGO_PROJECT_NAME
 
 sudo pip install psycopg2
 
-cd /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME
+cd $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME
 mv settings.py settings.py.backup # backup the original settings
 
 SETTINGS_PY=`cat settings.py.backup`
@@ -131,7 +137,7 @@ SETTINGS_PY="${SETTINGS_PY/$TARGET/$NEW_STUFF}"
 
 echo "$SETTINGS_PY" > settings.py
 
-cd /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/
+cd $PROJECTS_DIR/$DJANGO_PROJECT_NAME/
 
 #python manage.py syncdb
 python manage.py migrate
@@ -141,34 +147,34 @@ if [ $retval -ne 0 ]; then
 echoerr " Failed db migration !"
 else
 echoerr " create a superuser"
-python manage.py createsuperuser
+# python manage.py createsuperuser
 fi
 
 # Step Nine: Configure Gunicorn
 echoerr "Step Nine: Configure Gunicorn"
 
 echo "command = '/usr/local/bin/gunicorn'
-pythonpath = '/home/$WHOAMI/django/$DJANGO_PROJECT_NAME'
+pythonpath = '$PROJECTS_DIR/$DJANGO_PROJECT_NAME'
 bind = '127.0.0.1:8001'
-#? workers = 3" > /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
-workers = 1" > /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
+workers = 1" > $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
+#? workers = 3" > $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 
 # Step Ten: Configure NGINX
 echoerr "Step Ten: Configure NGINX"
 
-mkdir /home/$WHOAMI/django/static/
+mkdir $PROJECTS_DIR/static/
 
-sudo cp -r /usr/local/lib/python2.7/dist-packages/django/contrib/admin/static/admin/ /home/$WHOAMI/django/static/
+sudo cp -r /usr/local/lib/python2.7/dist-packages/django/contrib/admin/static/admin/ $PROJECTS_DIR/static/
 
 sudo echo "
 server {
 	server_name localhost;
 	access_log off;
 	location /static/admin/ {
-		alias /home/$WHOAMI/django/static/admin/;
+		alias $PROJECTS_DIR/static/admin/;
 	}
 	location /static/ {
-		alias /home/$WHOAMI/django/static/;
+		alias $PROJECTS_DIR/static/;
 	}
 	location / {
 			proxy_pass http://127.0.0.1:8001;
@@ -176,9 +182,9 @@ server {
 			proxy_set_header X-Real-IP \$remote_addr;
 			add_header P3P 'CP=\"ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV\"';
 	}
-}" > /home/$WHOAMI/$DJANGO_PROJECT_NAME
+}" > /tmp/$DJANGO_PROJECT_NAME.nginx
 
-sudo mv /home/$WHOAMI/$DJANGO_PROJECT_NAME /etc/nginx/sites-available
+sudo mv /tmp/$DJANGO_PROJECT_NAME.nginx /etc/nginx/sites-available
 
 sudo ln -s /etc/nginx/sites-available/$DJANGO_PROJECT_NAME /etc/nginx/sites-enabled/$DJANGO_PROJECT_NAME
 
@@ -189,7 +195,7 @@ sudo service nginx restart
 # Start the server
 echoerr "Starting django..."
 
-cd /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/
+cd $PROJECTS_DIR/$DJANGO_PROJECT_NAME/
 gunicorn -c $DJANGO_PROJECT_NAME/gunicorn_config.py $DJANGO_PROJECT_NAME.wsgi &
 
 echoerr "
@@ -198,4 +204,3 @@ Navigate to http://localhost/ to make sure that Django is working.
 "
 
 # FIN
-
