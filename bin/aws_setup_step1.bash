@@ -56,9 +56,12 @@ fi
 echoerr "Step One: Update Packages"
 
 sudo yum update
+sudo yum -y install gcc*  # gcc is needed by psycopg2 etc
 sudo yum upgrade
 
 sudo yum install python-pip
+sudo pip install --upgrade pip
+sudo ln -sf /usr/local/bin/pip /usr/bin/pip
 
 # Step Two: Install and Create Virtualenv
 echoerr "Step Two: Install and Create Virtualenv (not implemented)"
@@ -71,8 +74,9 @@ sudo pip install django
 
 # Step Four: Install PostgreSQL
 echoerr "Step Four: Install PostgreSQL"
-sudo yum install libpq-dev python-dev
-sudo yum install postgresql postgresql-contrib
+sudo yum -y install python27-devel.x86_64
+
+sudo yum -y install postgresql93*
 
 # Step Five: Install NGINX
 echoerr "Step Five: Install NGINX"
@@ -90,7 +94,7 @@ echoerr "Password is \"postgres\" (no quotes)"
 
 #create a database with postgres as the user
 
-#create user $WHOAMI ubuntu
+#create user $WHOAMI psycopg2
 
 sudo su postgres -c "createuser  $WHOAMI"
 
