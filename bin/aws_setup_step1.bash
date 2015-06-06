@@ -78,6 +78,10 @@ sudo yum -y install python27-devel.x86_64
 
 sudo yum -y install postgresql93*
 
+sudo  /etc/init.d/postgresql93 initdb
+sudo chkconfig  postgresql93 on
+sudo  /etc/init.d/postgresql93 start
+
 # Step Five: Install NGINX
 echoerr "Step Five: Install NGINX"
 sudo yum install nginx
@@ -111,6 +115,7 @@ echoerr "Step Eight: Create a Django Project"
 
 mkdir /home/$WHOAMI/django/
 cd /home/$WHOAMI/django/
+
 
 django-admin.py startproject $DJANGO_PROJECT_NAME
 
@@ -155,8 +160,8 @@ echoerr "Step Nine: Configure Gunicorn"
 echo "command = '/usr/local/bin/gunicorn'
 pythonpath = '/home/$WHOAMI/django/$DJANGO_PROJECT_NAME'
 bind = '127.0.0.1:8001'
-#? workers = 3" > /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 workers = 1" > /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
+# workers = 3" > /home/$WHOAMI/django/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 
 # Step Ten: Configure NGINX
 echoerr "Step Ten: Configure NGINX"
