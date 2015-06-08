@@ -186,9 +186,7 @@ server {
 			proxy_set_header X-Real-IP \$remote_addr;
 			add_header P3P 'CP=\"ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV\"';
 	}
-}" > /home/$WHOAMI/$DJANGO_PROJECT_NAME
-
-sudo mv /home/$WHOAMI/$DJANGO_PROJECT_NAME /etc/nginx/sites-available
+}" >  /etc/nginx/sites-available/$DJANGO_PROJECT_NAME
 
 sudo ln -s /etc/nginx/sites-available/$DJANGO_PROJECT_NAME /etc/nginx/sites-enabled/$DJANGO_PROJECT_NAME
 
