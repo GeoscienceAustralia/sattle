@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'tleserv',
+    'mod_wsgi.server',  #https://pypi.python.org/pypi/mod_wsgi
 )
 
 MIDDLEWARE_CLASSES = (
@@ -132,3 +133,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = '/var/www/django/sattle/static/'   #then run python2.7 manage.py collectstatic
+
