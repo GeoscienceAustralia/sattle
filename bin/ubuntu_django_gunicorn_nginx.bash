@@ -16,9 +16,9 @@
 
 PROJECTS_DIR=$HOME/django  #where the djangos projects will be created
 
-DJANGO_PROJECT_NAME='myproject2' # name of your django project
+DJANGO_PROJECT_NAME='myproject' # name of your django project
 
-POSTGRES_DB_NAME='mydb2' # name of the database that your django project will use
+POSTGRES_DB_NAME='mydb' # name of the database that your django project will use
 
 
 echo $PROJECTS_DIR
@@ -147,7 +147,7 @@ if [ $retval -ne 0 ]; then
 echoerr " Failed db migration !"
 else
 echoerr " create a superuser"
-# python manage.py createsuperuser
+python manage.py createsuperuser
 fi
 
 # Step Nine: Configure Gunicorn
@@ -182,9 +182,8 @@ server {
 			proxy_set_header X-Real-IP \$remote_addr;
 			add_header P3P 'CP=\"ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV\"';
 	}
-}" > /tmp/$DJANGO_PROJECT_NAME.nginx
+}" > /etc/nginx/sites-available/$DJANGO_PROJECT_NAME
 
-sudo mv /tmp/$DJANGO_PROJECT_NAME.nginx /etc/nginx/sites-available
 
 sudo ln -s /etc/nginx/sites-available/$DJANGO_PROJECT_NAME /etc/nginx/sites-enabled/$DJANGO_PROJECT_NAME
 
