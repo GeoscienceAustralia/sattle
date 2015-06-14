@@ -3,23 +3,24 @@
 #https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-django-with-postgres-nginx-and-gunicorn
 ###############################################################################
 # Purpose: one script install, config, django, posgres, gunicorn, nginx,
-# Todo: Virtualenv environment
-# Todo: tleclient a different user with sudo privil
-# Todo: Refactor, Centos/Redhat
-# Todo: Restful API and other apps.
+# Todo: Python Virtualenv environment, all pyhton package installed by pip into myViPyEnv
+# Todo: Adop to other apps.
+# Todo: Puppert/Ansible/Docker
 #
 ###############################################################################
 
 # assume git has been installed so that this script can be pulled from github
 
 # User Variables (edit these)
+FqdnameOrIpAddress=128.199.190.92  #please edit this according to your VM's IP
 
-PROJECTS_DIR=$HOME/django  #where the djangos projects will be created
+PROJECTS_DIR=/opt/django2  #where the djangos projects will be created
 
-DJANGO_PROJECT_NAME='myproject' # name of your django project
+DJANGO_PROJECT_NAME='myproject2' # name of your django project
 
-POSTGRES_DB_NAME='mydb' # name of the database that your django project will use
+POSTGRES_DB_NAME='mydb2' # name of the database that your django project will use
 
+mkdir $PROJECTS_DIR
 
 echo $PROJECTS_DIR
 # exit
@@ -64,15 +65,7 @@ sudo apt-get update
 sudo apt-get upgrade
 
 sudo apt-get install python-pip
-
-# Step Two: Install and Create Virtualenv
-echoerr "Step Two: Install and Create Virtualenv (not implemented)"
-
-# Skipped... this script is for new machines
-
-# Step Three: Install Django
-echoerr "Step Three: Install Django"
-sudo pip install django
+sudo apt-get install python-virtualenv
 
 # Step Four: Install PostgreSQL
 echoerr "Step Four: Install PostgreSQL"
@@ -82,10 +75,19 @@ sudo apt-get install postgresql postgresql-contrib
 # Step Five: Install NGINX
 echoerr "Step Five: Install NGINX"
 sudo apt-get install nginx
+# Step Two: Install and Create Virtualenv
+echoerr "Step Two: Install and Create Virtualenv (not implemented)"
+# Skipped... this script is for new machines
+virtualenv $PROJECTS_DIR/myViPyEnv
+source $PROJECTS_DIR/myViPyEnv/bin/active
+
+# Step Three: Install Django
+echoerr "Step Three: Install Django"
+ pip install django
 
 # Step Six: Install Gunicorn
 echoerr "Step Six: Install Gunicorn"
-sudo pip install gunicorn
+pip install gunicorn
 
 # Step Seven: Configure PostgreSQL
 printf "postgres\npostgres" | sudo passwd postgres
@@ -110,12 +112,11 @@ sudo su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O  $WHOAMI"
 # Step Eight: Create a Django Project
 echoerr "Step Eight: Create a Django Project"
 
-mkdir $PROJECTS_DIR/
 cd $PROJECTS_DIR/
 
 django-admin.py startproject $DJANGO_PROJECT_NAME
 
-sudo pip install psycopg2
+ pip install psycopg2
 
 cd $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME
 mv settings.py settings.py.backup # backup the original settings
@@ -155,7 +156,7 @@ echoerr "Step Nine: Configure Gunicorn"
 
 echo "command = '/usr/local/bin/gunicorn'
 pythonpath = '$PROJECTS_DIR/$DJANGO_PROJECT_NAME'
-bind = '127.0.0.1:8001'
+bind = $FqdnameOrIpAddress   #'127.0.0.1:8001'
 workers = 1" > $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 #? workers = 3" > $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 
@@ -168,7 +169,7 @@ sudo cp -r /usr/local/lib/python2.7/dist-packages/django/contrib/admin/static/ad
 
 sudo echo "
 server {
-	server_name localhost;
+	server_name $FqdnameOrIpAddress;
 	access_log off;
 	location /static/admin/ {
 		alias $PROJECTS_DIR/static/admin/;
@@ -177,13 +178,14 @@ server {
 		alias $PROJECTS_DIR/static/;
 	}
 	location / {
-			proxy_pass http://127.0.0.1:8001;
+			proxy_pass http://$FqdnameOrIpAddress:8001;  #gunicorn
 			proxy_set_header X-Forwarded-Host \$server_name;
 			proxy_set_header X-Real-IP \$remote_addr;
 			add_header P3P 'CP=\"ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV\"';
 	}
-}" > /etc/nginx/sites-available/$DJANGO_PROJECT_NAME
+}"  >    /tmp/$DJANGO_PROJECT_NAME
 
+sudo cp /tmp/$DJANGO_PROJECT_NAME /etc/nginx/sites-available/$DJANGO_PROJECT_NAME
 
 sudo ln -s /etc/nginx/sites-available/$DJANGO_PROJECT_NAME /etc/nginx/sites-enabled/$DJANGO_PROJECT_NAME
 
