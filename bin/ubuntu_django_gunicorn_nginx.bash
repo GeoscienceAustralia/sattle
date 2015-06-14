@@ -20,16 +20,19 @@ DJANGO_PROJECT_NAME='myproject2' # name of your django project
 
 POSTGRES_DB_NAME='mydb2' # name of the database that your django project will use
 
-mkdir $PROJECTS_DIR
+WHOAMI=`whoami`  # fzhan
 
-echo $PROJECTS_DIR
+sudo mkdir $PROJECTS_DIR
+
+sudo chown ${WHOAMI} $PROJECTS_DIR
+
+ls -l $PROJECTS_DIR
 # exit
 
 # BEGIN SCRIPT
 
 # don't run this as root
 
-WHOAMI=`whoami`
 if [ "${WHOAMI}" == "root" ]; then
 	echo "Don't run this script with sudo or as root."
 	exit
@@ -79,7 +82,7 @@ sudo apt-get install nginx
 echoerr "Step Two: Install and Create Virtualenv (not implemented)"
 # Skipped... this script is for new machines
 virtualenv $PROJECTS_DIR/myViPyEnv
-source $PROJECTS_DIR/myViPyEnv/bin/active
+source $PROJECTS_DIR/myViPyEnv/bin/activate
 
 # Step Three: Install Django
 echoerr "Step Three: Install Django"
@@ -156,7 +159,7 @@ echoerr "Step Nine: Configure Gunicorn"
 
 echo "command = '/usr/local/bin/gunicorn'
 pythonpath = '$PROJECTS_DIR/$DJANGO_PROJECT_NAME'
-bind = $FqdnameOrIpAddress   #'127.0.0.1:8001'
+bind = '$FqdnameOrIpAddress:8001'   #'127.0.0.1:8001'
 workers = 1" > $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 #? workers = 3" > $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 
@@ -199,9 +202,6 @@ echoerr "Starting django..."
 cd $PROJECTS_DIR/$DJANGO_PROJECT_NAME/
 gunicorn -c $DJANGO_PROJECT_NAME/gunicorn_config.py $DJANGO_PROJECT_NAME.wsgi &
 
-echoerr "
-Django is now running in the background.
-Navigate to http://localhost/ to make sure that Django is working.
-"
+echoerr "Django is now running in the background.    Navigate to http://$FqdnameOrIpAddress/admin to test"
 
 # FIN
