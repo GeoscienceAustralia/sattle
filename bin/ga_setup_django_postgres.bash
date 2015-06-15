@@ -1,32 +1,27 @@
 #!/usr/bin/env bash
 ###############################################################################
-# Purpose:  One cmd script to install, config, django, postgres, gunicorn, nginx,
-#           Python Virtualenv environment, all pyhton package installed by pip into myViPyEnv
+# Purpose:  One cmd script to install, config, django, postgres, gunicorn, nginx, modwsgi
+#           Python Virtualenv environment, all pyhton package installed by pip into PyVenv
 #
 # Author: fei.zhang@ga.gov.au
 # Date: 2015-06-02
-# Usage: Redhat-CentOS
+# Usage: Redhat-CentOS in GA
 # edit the first few lines according to your VM IP then run it as a non-root user, who has sudo privilege
 #
-# Todo: Adop to other OS/apps.
+# Todo: Deploy a real App.
 # Todo: Puppert/Ansible/Docker
-# Todo: can be further modulized and refactored
+# Todo: Further modulize and refactor
 ###############################################################################
-#Step-0 Create a properly configured AWS Linux
-#Step-1:From AWS Linux VM initial creation, to install everything necessary to run a django project
 
+FqdnameOrIpAddress='10.10.19.44'  # edit this according to your VM's FQDN or IP
 
-###############################################################################
-# assume git has been installed so that this script can be pulled from github
+PROJECTS_DIR=/opt/django  #where the djangos projects will be created
 
-# User Variables (edit these)
-FqdnameOrIpAddress='ec2-52-64-95-85.ap-southeast-2.compute.amazonaws.com'  #please edit this according to your VM's IP
+DJANGO_PROJECT_NAME='myproject' # name of your django project
 
-PROJECTS_DIR=/opt/django2  #where the djangos projects will be created
+POSTGRES_DB_NAME='mydb' # name of the database that your django project will use
 
-DJANGO_PROJECT_NAME='myproject2' # name of your django project
-
-POSTGRES_DB_NAME='mydb2' # name of the database that your django project will use
+PYTHON_VENV_NAME='PyVenv'
 
 ##--------------------------------------------------------------------------------
 # nothing needs to be changed below this line
@@ -43,8 +38,8 @@ ls -l $PROJECTS_DIR
 # exit
 
 if [ "${WHOAMI}" == "root" ]; then
-	echo "Don't run this script as root."
-	exit
+        echo "Don't run this script as root."
+        exit
 fi
 
 # output
@@ -59,12 +54,12 @@ control_c() {
 # Install and Configure PostgreSQL
 setup_postgres() {
 
-    #  Install PostgreSQL
-    sudo yum -y install postgresql93*
+    #  Install PostgreSQL93 or 94
+    sudo yum -y install postgresql94*
 
-    sudo  /etc/init.d/postgresql93 initdb
-    sudo chkconfig  postgresql93 on
-    sudo  /etc/init.d/postgresql93 start
+    sudo  /etc/init.d/postgresql-9.4 initdb
+    sudo chkconfig  postgresql-9.4 on
+    sudo  /etc/init.d/postgresql-9.4 start
 
     #create user $WHOAMI
     sudo su postgres -c "createuser  $WHOAMI"
@@ -76,12 +71,14 @@ setup_postgres() {
 
 setup_django(){
 
-    virtualenv $PROJECTS_DIR/myViPyEnv
-    source $PROJECTS_DIR/myViPyEnv/bin/activate
+    virtualenv $PROJECTS_DIR/$PYTHON_VENV_NAME
+    source $PROJECTS_DIR/$PYTHON_VENV_NAME/bin/activate
 
     myprint "pip Install Django and DB drivers"
     #sudo
     pip install django
+
+    export PATH=/usr/pgsql-9.4/bin:$PATH   ## GA specific for pg_config to install psycopg2
     pip install psycopg2
 
     cd $PROJECTS_DIR/
@@ -105,11 +102,6 @@ setup_django(){
 
     SETTINGS_PY="${SETTINGS_PY/$TARGET/$NEW_STUFF}"
 
-    TARGET="'django.contrib.staticfiles',"
-    NEW_STUFF="'django.contrib.staticfiles', 'mod_wsgi.server',";
-
-    SETTINGS_PY="${SETTINGS_PY/$TARGET/$NEW_STUFF}"
-
     echo "$SETTINGS_PY" > settings.py
 
 
@@ -130,8 +122,8 @@ setup_django(){
 setup_gunicorn(){
     myprint "Install Gunicorn"
 
-    virtualenv $PROJECTS_DIR/myViPyEnv
-    source $PROJECTS_DIR/myViPyEnv/bin/activate
+    virtualenv $PROJECTS_DIR/$PYTHON_VENV_NAME
+    source $PROJECTS_DIR/$PYTHON_VENV_NAME/bin/activate
 
     #sudo
     pip install gunicorn
@@ -200,19 +192,35 @@ setup_nginx() {
 
 setup_modwsgi(){
 
-MOD_WSIG_USER=$WHOAMI  #beaware this run user may have to be use to connect postgres db by default
-
+MOD_WSIG_USER=$WHOAMI  #beaware this run user might be used to connect postgres db (see setting.py)
+MOD_WSIG_GROUP=$WHOAMI
 #libs required by modwsgi
 sudo yum install httpd.x86_64
 sudo yum install httpd-devel.x86_64
 
-virtualenv $PROJECTS_DIR/myViPyEnv
-source $PROJECTS_DIR/myViPyEnv/bin/activate
+virtualenv $PROJECTS_DIR/$PYTHON_VENV_NAME
+source $PROJECTS_DIR/$PYTHON_VENV_NAME/bin/activate
 pip install mod-wsgi
 
-sudo  $PROJECTS_DIR/myViPyEnv/bin/python  manage.py runmodwsgi --setup-only --port=8888 --user $MOD_WSIG_USER --group root --server-root=/etc/mod_wsgi-express8888
+# massage the setting.py to use mod-wsgi server
+    cd $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME
 
-echo "please check and edit  /etc/mod_wsgi-express8888/apachectl"
+    SETTINGS_PY=`cat settings.py`
+
+    TARGET="'django.contrib.staticfiles',"
+    NEW_STUFF="'django.contrib.staticfiles', 'mod_wsgi.server',";
+
+    SETTINGS_PY="${SETTINGS_PY/$TARGET/$NEW_STUFF}"
+
+    echo "$SETTINGS_PY" > settings.py
+    echo "STATIC_ROOT = '$PROJECTS_DIR/static/'" >> settings.py
+
+    cd  $PROJECTS_DIR/$DJANGO_PROJECT_NAME
+    python manage.py collectstatic
+
+$PROJECTS_DIR/$PYTHON_VENV_NAME/bin/python  manage.py runmodwsgi --setup-only --port=8888 --user $MOD_WSIG_USER --group $MOD_WSIG_GROUP --server-root=./modwsgi-p8888
+
+echo "please check and edit  modwsgi-p8888/apachectl"
 
 }
 #In the Beginning, .....
@@ -224,13 +232,15 @@ trap control_c SIGINT
 sudo -v  #validate
 if [ $? -eq 0 ] # sudo myprint "This script needs sudo access..."; then
 then
-	echo "sudo access validated ......."
+        echo "sudo access validated ......."
 else
     echo "sudo problem: make sure the running user has sudo privilege"
-	exit 1
+        exit 1
 fi
 
 myprint "Update and install Packages"
+
+sudo yum clean all  # clean cache
 
 sudo yum -y update
 sudo yum -y install gcc*  # gcc is needed by psycopg2 etc
@@ -238,9 +248,12 @@ sudo yum -y upgrade
 sudo yum -y install python27-devel.x86_64
 sudo yum -y install python-pip
 sudo pip install --upgrade pip
+#GA sudo yum -y install python27-pip.x86_64
 sudo ln -sf /usr/local/bin/pip /usr/bin/pip
 
 # Install and Create Virtualenv
+
+sudo yum -y install python27-virtualenv.x86_64
 sudo yum -y install python27-virtualenv.noarch
 
 # call shell functions
@@ -254,5 +267,5 @@ setup_django
 #OR mod-wsgi
 setup_modwsgi
 
-######################################################################
-# The end
+##################################################################################################################
+
