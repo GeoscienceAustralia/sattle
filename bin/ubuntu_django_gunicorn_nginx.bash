@@ -1,14 +1,18 @@
 #!/bin/bash
-# adapted from https://github.com/sean-moore/genesis
-#https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-django-with-postgres-nginx-and-gunicorn
-###############################################################################
-# Purpose: one script install, config, django, posgres, gunicorn, nginx,
-# Todo: Python Virtualenv environment, all pyhton package installed by pip into myViPyEnv
-# Todo: Adop to other apps.
-# Todo: Puppert/Ansible/Docker
 #
+#Ref: https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-django-with-postgres-nginx-and-gunicorn
 ###############################################################################
-
+# Purpose:  One script install, config, django, postgres, gunicorn, nginx,
+#           Python Virtualenv environment, all pyhton package installed by pip into myViPyEnv
+#
+# Author: fei.zhang@ga.gov.au
+# Date: 2015-06-02
+# Usage: edit the first few lines according to your VM IP then run it as a non-root user, who has sudo privilege
+#
+# Todo: Adop to other OS/apps.
+# Todo: Puppert/Ansible/Docker
+# Todo: can be further modulized and refactored
+###############################################################################
 # assume git has been installed so that this script can be pulled from github
 
 # User Variables (edit these)
@@ -20,7 +24,11 @@ DJANGO_PROJECT_NAME='myproject2' # name of your django project
 
 POSTGRES_DB_NAME='mydb2' # name of the database that your django project will use
 
-WHOAMI=`whoami`  # fzhan
+##--------------------------------------------------------------------------------
+# nothing needs to be changed below this line
+##--------------------------------------------------------------------------------
+
+WHOAMI=`whoami`  # unix user: fzhang
 
 sudo mkdir $PROJECTS_DIR
 
@@ -55,6 +63,29 @@ control_c() {
   exit $?
 }
 
+config_setup_postgres() {
+
+# Configure PostgreSQL
+    printf "postgres\npostgres" | sudo passwd postgres
+
+    echoerr "Configure PostgreSQL"
+    echoerr "Password is \"postgres\" (no quotes)"
+
+    #create a database with postgres as the user
+
+    #create user $WHOAMI ubuntu
+
+    sudo su postgres -c "createuser  $WHOAMI"
+
+    #alter database mydb owner to ubuntu;
+    sudo su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O  $WHOAMI"
+
+    #until su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O ubuntu;" # no need to create new role
+    #do
+    #	echoerr "Wrong password. Password is \"postgres\" (no quotes). Try again"
+    #done
+}
+
 # trap keyboard interrupt (control-c)
 trap control_c SIGINT
 
@@ -62,7 +93,7 @@ trap control_c SIGINT
 # test if user has sudo priv
 
 # Step One: Update Packages
-echoerr "Step One: Update Packages"
+echoerr "Step One: Update and install Packages"
 
 sudo apt-get update
 sudo apt-get upgrade
@@ -71,55 +102,41 @@ sudo apt-get install python-pip
 sudo apt-get install python-virtualenv
 
 # Step Four: Install PostgreSQL
-echoerr "Step Four: Install PostgreSQL"
+echoerr "Install PostgreSQL"
 sudo apt-get install libpq-dev python-dev
 sudo apt-get install postgresql postgresql-contrib
 
-# Step Five: Install NGINX
-echoerr "Step Five: Install NGINX"
+config_setup_postgres
+
+#  Install NGINX
+echoerr "Install NGINX"
 sudo apt-get install nginx
+
 # Step Two: Install and Create Virtualenv
 echoerr "Step Two: Install and Create Virtualenv (not implemented)"
 # Skipped... this script is for new machines
 virtualenv $PROJECTS_DIR/myViPyEnv
 source $PROJECTS_DIR/myViPyEnv/bin/activate
 
+# after activate the virtual python env, pip install below will done without sudo.
 # Step Three: Install Django
 echoerr "Step Three: Install Django"
- pip install django
+ pip install django  #into myViPyEnv
 
 # Step Six: Install Gunicorn
-echoerr "Step Six: Install Gunicorn"
-pip install gunicorn
+echoerr "Install Gunicorn"
+pip install gunicorn #into myViPyEnv
 
-# Step Seven: Configure PostgreSQL
-printf "postgres\npostgres" | sudo passwd postgres
+# database driver
+pip install psycopg2
 
-echoerr "Step Seven: Configure PostgreSQL"
-echoerr "Password is \"postgres\" (no quotes)"
-
-#create a database with postgres as the user
-
-#create user $WHOAMI ubuntu
-
-sudo su postgres -c "createuser  $WHOAMI"
-
-#alter database mydb owner to ubuntu;
-sudo su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O  $WHOAMI"
-
-#until su postgres -c "createdb \"$POSTGRES_DB_NAME\" -O ubuntu;" # no need to create new role
-#do
-#	echoerr "Wrong password. Password is \"postgres\" (no quotes). Try again"
-#done
-
-# Step Eight: Create a Django Project
-echoerr "Step Eight: Create a Django Project"
+# Create a Django Project
+echoerr "Create a Django Project"
 
 cd $PROJECTS_DIR/
 
 django-admin.py startproject $DJANGO_PROJECT_NAME
 
- pip install psycopg2
 
 cd $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME
 mv settings.py settings.py.backup # backup the original settings
@@ -168,6 +185,7 @@ echoerr "Step Ten: Configure NGINX"
 
 mkdir $PROJECTS_DIR/static/
 
+#this may fail for virtualenv
 sudo cp -r /usr/local/lib/python2.7/dist-packages/django/contrib/admin/static/admin/ $PROJECTS_DIR/static/
 
 sudo echo "

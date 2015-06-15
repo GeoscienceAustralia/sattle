@@ -168,6 +168,7 @@ echoerr "Step Ten: Configure NGINX"
 
 mkdir /home/$WHOAMI/django/static/
 
+#this may fail for virtualenv
 sudo cp -r /usr/local/lib/python2.7/site-packages/django/contrib/admin/static/admin/ /home/$WHOAMI/django/static/
 
 sudo echo "
