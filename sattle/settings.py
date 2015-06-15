@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'tleserv',
-    'mod_wsgi.server',  #https://pypi.python.org/pypi/mod_wsgi
+    'mod_wsgi.server',  #have this before runmodwsgi See  https://pypi.python.org/pypi/mod_wsgi
 )
 
 MIDDLEWARE_CLASSES = (

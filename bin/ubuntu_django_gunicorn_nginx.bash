@@ -106,15 +106,15 @@ echoerr "Install PostgreSQL"
 sudo apt-get install libpq-dev python-dev
 sudo apt-get install postgresql postgresql-contrib
 
+# call shell function
 config_setup_postgres
 
 #  Install NGINX
 echoerr "Install NGINX"
 sudo apt-get install nginx
 
-# Step Two: Install and Create Virtualenv
-echoerr "Step Two: Install and Create Virtualenv (not implemented)"
-# Skipped... this script is for new machines
+# Install and Create Virtualenv
+
 virtualenv $PROJECTS_DIR/myViPyEnv
 source $PROJECTS_DIR/myViPyEnv/bin/activate
 
@@ -177,7 +177,9 @@ echoerr "Step Nine: Configure Gunicorn"
 echo "command = '/usr/local/bin/gunicorn'
 pythonpath = '$PROJECTS_DIR/$DJANGO_PROJECT_NAME'
 bind = '$FqdnameOrIpAddress:8001'   #'127.0.0.1:8001'
-workers = 1" > $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
+workers = 1
+#user = 'nobody'
+" > $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 #? workers = 3" > $PROJECTS_DIR/$DJANGO_PROJECT_NAME/$DJANGO_PROJECT_NAME/gunicorn_config.py
 
 # Step Ten: Configure NGINX
@@ -218,6 +220,8 @@ sudo service nginx restart
 echoerr "Starting django..."
 
 cd $PROJECTS_DIR/$DJANGO_PROJECT_NAME/
+
+# to run the gunicorn (as nobody user) sudo gunicorn
 gunicorn -c $DJANGO_PROJECT_NAME/gunicorn_config.py $DJANGO_PROJECT_NAME.wsgi &
 
 echoerr "Django is now running in the background.    Navigate to http://$FqdnameOrIpAddress/admin to test"
