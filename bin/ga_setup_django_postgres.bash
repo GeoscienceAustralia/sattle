@@ -80,6 +80,7 @@ setup_django(){
 
     export PATH=/usr/pgsql-9.4/bin:$PATH   ## GA specific for pg_config to install psycopg2
     pip install psycopg2
+    #http://stackoverflow.com/questions/12911717/error-command-gcc-failed-with-exit-status-when-installing-psycopg2
 
     cd $PROJECTS_DIR/
 
