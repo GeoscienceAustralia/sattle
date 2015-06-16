@@ -193,7 +193,8 @@ setup_nginx() {
 setup_modwsgi(){
 
 MOD_WSIG_USER=$WHOAMI  #beaware this run user might be used to connect postgres db (see setting.py)
-MOD_WSIG_GROUP=$WHOAMI
+MOD_WSIG_GROUP=$WHOAMI  #bad group may bug
+
 #libs required by modwsgi
 sudo yum install httpd.x86_64
 sudo yum install httpd-devel.x86_64
@@ -218,36 +219,39 @@ pip install mod-wsgi
     cd  $PROJECTS_DIR/$DJANGO_PROJECT_NAME
     python manage.py collectstatic
 
-$PROJECTS_DIR/$PYTHON_VENV_NAME/bin/python  manage.py runmodwsgi --setup-only --port=8888 --user $MOD_WSIG_USER --group $MOD_WSIG_GROUP --server-root=./modwsgi-p8888
+$PROJECTS_DIR/$PYTHON_VENV_NAME/bin/python  manage.py runmodwsgi --setup-only --port=8888 --user $MOD_WSIG_USER --group $MOD_WSIG_GROUP --server-root=../modwsgi-p8888
 
-echo "please check and edit  modwsgi-p8888/apachectl"
+echo "please check ../modwsgi-p8888/apachectl start, edit for the status"
+echo " check firewall, if blocking the port 8888 ?"
+echo "todos ................ "
 
 }
 
 install_essentials(){
-myprint "Update and install essential Packages"
+    myprint "Update and install essential Packages"
 
-sudo yum clean all  # clean cache
+    sudo yum clean all  # clean cache
 
-sudo yum -y update
-sudo yum -y install gcc*  # gcc is needed by psycopg2 etc
-sudo yum -y upgrade
-sudo yum -y install python27-devel.x86_64
-sudo yum -y install python-pip
-sudo pip install --upgrade pip
-#GA sudo yum -y install python27-pip.x86_64
-#sudo ln -sf /usr/local/bin/pip /usr/bin/pip
+    sudo yum -y update
+    sudo yum -y install gcc*  # gcc is needed by psycopg2 etc
+    sudo yum -y upgrade
+    sudo yum -y install python27-devel.x86_64
+    sudo yum -y install python-pip
+    sudo pip install --upgrade pip
+    #GA sudo yum -y install python27-pip.x86_64
+    #sudo ln -sf /usr/local/bin/pip /usr/bin/pip
 
-# Install and Create Virtualenv
+    # Install Virtualenv
 
-#sudo yum -y install python27-virtualenv.x86_64
-#sudo yum -y install python27-virtualenv.noarch
+    #sudo yum -y install python27-virtualenv.x86_64
+    #sudo yum -y install python27-virtualenv.noarch
 
 }
 
 
 ############################################################################
-#In the Beginning, .....
+# main beginning, .....
+# pip install need https proxy setting
 ############################################################################
 # trap keyboard interrupt (control-c)
 trap control_c SIGINT
