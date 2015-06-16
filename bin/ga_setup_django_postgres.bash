@@ -15,11 +15,11 @@
 
 FqdnameOrIpAddress='10.10.19.44'  # edit this according to your VM's FQDN or IP
 
-PROJECTS_DIR=/opt/django  #where the djangos projects will be created
+PROJECTS_DIR=/data/fzhang/django  #where the djangos projects will be created
 
 DJANGO_PROJECT_NAME='myproject' # name of your django project
 
-POSTGRES_DB_NAME='mydb' # name of the database that your django project will use
+POSTGRES_DB_NAME='djangodb' # name of the database that your django project will use
 
 PYTHON_VENV_NAME='PyVenv'
 
@@ -30,9 +30,9 @@ PYTHON_VENV_NAME='PyVenv'
 
 WHOAMI=`whoami`  # unix user: fzhang
 
-sudo mkdir -p $PROJECTS_DIR
+mkdir -p $PROJECTS_DIR
 
-sudo chown -R ${WHOAMI} $PROJECTS_DIR
+#sudo chown -R ${WHOAMI} $PROJECTS_DIR
 
 ls -l $PROJECTS_DIR
 # exit
@@ -223,6 +223,30 @@ $PROJECTS_DIR/$PYTHON_VENV_NAME/bin/python  manage.py runmodwsgi --setup-only --
 echo "please check and edit  modwsgi-p8888/apachectl"
 
 }
+
+install_essentials(){
+myprint "Update and install essential Packages"
+
+sudo yum clean all  # clean cache
+
+sudo yum -y update
+sudo yum -y install gcc*  # gcc is needed by psycopg2 etc
+sudo yum -y upgrade
+sudo yum -y install python27-devel.x86_64
+sudo yum -y install python-pip
+sudo pip install --upgrade pip
+#GA sudo yum -y install python27-pip.x86_64
+#sudo ln -sf /usr/local/bin/pip /usr/bin/pip
+
+# Install and Create Virtualenv
+
+#sudo yum -y install python27-virtualenv.x86_64
+#sudo yum -y install python27-virtualenv.noarch
+
+}
+
+
+############################################################################
 #In the Beginning, .....
 ############################################################################
 # trap keyboard interrupt (control-c)
@@ -238,34 +262,19 @@ else
         exit 1
 fi
 
-myprint "Update and install Packages"
-
-sudo yum clean all  # clean cache
-
-sudo yum -y update
-sudo yum -y install gcc*  # gcc is needed by psycopg2 etc
-sudo yum -y upgrade
-sudo yum -y install python27-devel.x86_64
-sudo yum -y install python-pip
-sudo pip install --upgrade pip
-#GA sudo yum -y install python27-pip.x86_64
-sudo ln -sf /usr/local/bin/pip /usr/bin/pip
-
-# Install and Create Virtualenv
-
-sudo yum -y install python27-virtualenv.x86_64
-sudo yum -y install python27-virtualenv.noarch
-
 # call shell functions
-setup_postgres
 
-setup_django
+#   install_essentials
+
+#   setup_postgres
+
+    setup_django
 
 #setup_gunicorn
 #setup_nginx
 
 #OR mod-wsgi
-setup_modwsgi
+    setup_modwsgi
 
 ##################################################################################################################
 
