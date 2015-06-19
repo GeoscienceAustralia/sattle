@@ -1,0 +1,55 @@
+ Recommended to use python virtualenv to complete isolate this application from the system python installed packages.
+  So setup python27 virtualenv and pip is pre-requisite
+
+ MyDjangoProjDir=/opt/django
+
+ get stattle package installed  $MyDjangoProjDir/sattle
+
+ virtualenv $MyDjangoProjDir/PyVenv
+
+cd sattle
+ pip_install.sh -r requirement.txt
+
+ double check sattle/sattle/setting.py for configuration modification
+
+ ./manage.py  collectstatic
+
+ ./manage.py migrate
+
+ ./manage.py createsuperuser
+
+Assume RESTful use port=8888
+ ./manage.py runserver 0.0.0.0:8888 &
+
+ Smoke test:
+ http://143.174.60.8:8888/sattle/admin/
+
+ http://143.174.60.8:8888/sattle/tleserv/satellites/
+
+To see what command available
+
+./manage.py help
+
+RUN_USER=rms_usr
+RUN_GRP=`id -gn $RUN_USER"`
+./manage.py runmodwsgi --setup-only --port=8888 --user $RUN_USER --group $RUN_GRP --server-root=../modwsgip8888
+
+ Beaware of dir/file permissions anf fix if necessary
+(PyVenv)[fzhang@rhe-obsnet-prod02 sattle]$ chown -R fzhang:rms /home/fzhang
+(PyVenv)[fzhang@rhe-obsnet-prod02 sattle]$ chmod -R 750 /home/fzhang
+
+cd ../modwsgip8888
+
+edit the ./apachectl to chnage the status command behavior:
+status)
+    #orginal not work exec /opt/django/PyVenv/bin/python -m webbrowser -t $STATUSURL
+    #echo $MOD_WSGI_USER
+    echo "the following daemon process is running by user  $MOD_WSGI_USER:"
+    #echo pgrep -l -f "$MOD_WSGI_SERVER_ROOT"
+    pgrep -u $MOD_WSGI_USER -l -f "$MOD_WSGI_SERVER_ROOT"
+    ;;
+
+
+PyVenv)[fzhang@rhe-obsnet-prod02 modwsgip8888]$ ./apachectl start
+(PyVenv)[fzhang@rhe-obsnet-prod02 modwsgip8888]$
+(PyVenv)[fzhang@rhe-obsnet-prod02 modwsgip8888]$ ps -flu fzhang

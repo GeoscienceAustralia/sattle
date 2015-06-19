@@ -134,5 +134,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/var/www/django/sattle/static/'   #then run python2.7 manage.py collectstatic
-
+#STATIC_ROOT = '/var/www/django/sattle/static/'   #then run python2.7 manage.py collectstatic
+STATIC_ROOT = '/home/fzhang/django//static/'   #then run python2.7 manage.py collectstatic

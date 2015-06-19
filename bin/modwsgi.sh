@@ -5,25 +5,29 @@
 # chkconfig: 345 95 05
 # description: modwsgi daemon service
 #
-# processname: modwsgi
+# fei.zhang@ga.gov.au
+# Geoscience Australia
+#
+# Provides: modwsgi and httpd for django
+# Required-Start: $local_fs $network
+# Required-Stop: $local_fs $network
+# Should-Start:  345
+# Should-Stop: 0 1 6
+### END INIT INFO
+
+############################################################
+# 2015-06-15
+# This is a stub script to be installed in /etc/init.d to provide service
 # config: /opt/django/myproject/modwsgi-p8888
 # SeeAlso
 # http://www.tldp.org/HOWTO/HighQuality-Apps-HOWTO/boot.html
 # http://serverfault.com/questions/29788/what-is-needed-for-a-linux-service-to-be-supported-by-chkconfig
 #
-# Example:
-# [fzhang@pe-master init.d]$ vi modwsgi.sh
-# A stub script to be installed in /etc/init.d to provide service
-# fei.zhang@ga.gov.au
-# 2015-06-15
-
 # to call the control sacript below
-# USAGE: /etc/init.d/modwsgi-p8888 start/stop|status
-# chkconfig --add -list --del  name
-# chkconfig modwsgi.sh on
+# USAGE: /etc/init.d/modwsgi.sh start/stop|status
 #------------------------------------------------------------
-# Source function library. Is this neessary
-. /etc/rc.d/init.d/functions
+# Source function library, is this really needed?
+# . /etc/rc.d/init.d/functions
 
 
 # Call up a self-contained django python app in
