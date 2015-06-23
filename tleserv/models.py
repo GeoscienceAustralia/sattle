@@ -15,7 +15,7 @@ class Satellite(models.Model):
         db_table = 'satellite'
 
     def __str__(self):
-        return "%s_%s"%(self.norad_number,self.satname)
+        return "%s_%s"%(self.satname, self.norad_number)
 
 
 
