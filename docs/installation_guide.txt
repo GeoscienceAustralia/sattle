@@ -1,3 +1,4 @@
+
  Recommended to use python virtualenv to complete isolate this application from the system python installed packages.
   So setup python27 virtualenv and pip is pre-requisite
 
@@ -12,7 +13,7 @@ cd sattle
 
  double check sattle/sattle/setting.py for configuration modification
 
- ./manage.py  collectstatic
+# static is part of the source code. do not need to run this again  ./manage.py  collectstatic
 
  ./manage.py migrate
 
