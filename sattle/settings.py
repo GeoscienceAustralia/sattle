@@ -22,10 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'gcm673f%o+bl7p&djg*k(#!v1tyy#*x+$(m0qly+1420&n*)$9'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# SECURITY WARNING: don't run with debug in production!
+#DEBUG = True   #for dev env
+DEBUG = False   #for prod env
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []      #for dev env
+ALLOWED_HOSTS = [ '*',] #for prod env
+
 
 
 # Application definition
@@ -96,7 +99,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'sattle',
     },
-    # postgres pe-test,ubu and aws
+    # postgresql connection credential. need config in production
     'default':{
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'rmsdb',
@@ -113,6 +116,13 @@ DATABASES = {
 
 }
 
+## Local customisation
+import yaml
+with open('/fetch.conf.d/dbconf.yaml', 'r') as f: mydbs = yaml.load(f)
+# get the db credential
+Mysql= mydbs['mysqldb']  # check the config yaml file
+Postgres = mydbs['postgresdb']
+DATABASES['default'] = Postgres
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

@@ -14,17 +14,19 @@ DjangoProjDirRoot=/opt/django
 
 # get sattle package installed into $DjangoProjDirRoot
 cd $DjangoProjDirRoot
-git clone https://github.com/GeoscienceAustralia/sattle.git
-# alternatively, prepare the source as tar ball, the unpack here
+
+# prepare the source as tar ball, the unpack here
+# alternatively,
+# git clone https://github.com/GeoscienceAustralia/sattle.git
 
 cd sattle
-rm  -rf .git   #if want to forget the git repo
+# rm  -rf .git   #if want to forget the git repo
 
 #---------------------------------
 # create a virtual environment
-virtualenv $MyDjangoProjDir/PyVenv
+virtualenv $DjangoProjDirRoot/PyVenv
 #activate the virtualenv
-source $MyDjangoProjDir/PyVenv/bin/activate
+source $DjangoProjDirRoot/PyVenv/bin/activate
 
 #get proxy for http/https://outside.ga
 source /etc/fetch.conf.d/proxy.sh
@@ -46,7 +48,7 @@ pip freeze
 
 #./manage.py migrate  #This will connect to the default dataabse configured in the sattle/setting.py
 
-./manage.py createsuperuser # this will create a admin user for web UI login
+#Just onece  ./manage.py createsuperuser # this will create a admin user for web UI login
 
 #./manage.py runserver 0.0.0.0:8000   # this will start a http server at port 8000
 #To see what command available ./manage.py help
@@ -63,24 +65,30 @@ HTTP_PORT=8888
 RUN_USER=rms_usr
 RUN_GROUP=`id -gn $RUN_USER`
 
-./manage.py runmodwsgi --setup-only --port=$HTTP_PORT --user $RUN_USER --group $RUN_GROUP --server-root=$MyDjangoProjDir/sattle/modwsgi
+./manage.py runmodwsgi --setup-only --port=$HTTP_PORT --user $RUN_USER --group $RUN_GROUP --server-root=$DjangoProjDirRoot/sattle/modwsgi
 
 # Beaware of dir/file permissions and fix if necessary, for example:
 #(PyVenv)[fzhang@rhe-obsnet-prod02 sattle]$ chown -R fzhang:rms /home/fzhang
 #(PyVenv)[fzhang@rhe-obsnet-prod02 sattle]$ chmod -R 750 /home/fzhang
 
-cd $MyDjangoProjDir/sattle/modwsgi
+cd $DjangoProjDirRoot/sattle/modwsgi
 
-# edit the ./apachectl to chnage the status command behavior:
-status)
-    #orginal not work exec /opt/django/PyVenv/bin/python -m webbrowser -t $STATUSURL
-    #echo $MOD_WSGI_USER
-    echo "the following daemon process is running by user  $MOD_WSGI_USER:"
+echo "Please edit the ./apachectl to change the status command behavior as follows"
+#status)
+    #replace the orginal line  exec /opt/django/PyVenv/bin/python -m webbrowser -t $STATUSURL
+    #########exec /opt/django/PyVenv/bin/python -m webbrowser -t $STATUSURL
+    echo "Check daemon process run by user  $MOD_WSGI_USER:"
     #echo pgrep -l -f "$MOD_WSGI_SERVER_ROOT"
-    pgrep -u $MOD_WSGI_USER -l -f "$MOD_WSGI_SERVER_ROOT"
+    #pgrep -u $MOD_WSGI_USER -lf "$MOD_WSGI_SERVER_ROOT"
+    pgrep -u $MOD_WSGI_USER -lf "$PROCESS_NAME"
+
 
 
 ./apachectl start
+#./apachectl status
+#./apachectl stop
+#./apachectl status
+#./apachectl start
 
 # test the RESTFul API in browser:http://IpAddress_Or_ServerHostName:$HTTP_PORT/sattle/tleserv/
 # test the Restful API in python clients: tleserv/telclient/*.py
