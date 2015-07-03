@@ -61,30 +61,35 @@ HTTP_PORT=8888
 #http://IpAddress_Or_ServerHostName:$HTTP_PORT/sattle/tleserv/
 
 
+MODWSGIDIR=$DjangoProjDirRoot/sattle/modwsgi
+$MODWSGIDIR/apachectl stop
 # Now create modwsgi startup scripts and configuration for this Django app.
 RUN_USER=rms_usr
 RUN_GROUP=`id -gn $RUN_USER`
 
-./manage.py runmodwsgi --setup-only --port=$HTTP_PORT --user $RUN_USER --group $RUN_GROUP --server-root=$DjangoProjDirRoot/sattle/modwsgi
+./manage.py runmodwsgi --setup-only --port=$HTTP_PORT --user $RUN_USER --group $RUN_GROUP --server-root=$MODWSGIDIR
 
 # Beaware of dir/file permissions and fix if necessary, for example:
 #(PyVenv)[fzhang@rhe-obsnet-prod02 sattle]$ chown -R fzhang:rms /home/fzhang
 #(PyVenv)[fzhang@rhe-obsnet-prod02 sattle]$ chmod -R 750 /home/fzhang
 
-cd $DjangoProjDirRoot/sattle/modwsgi
+cd $MODWSGIDIR
 
-echo "Optional: Please edit the ./apachectl to change the status command behavior as follows"
-echo << EOF
-status)
-    replace the orginal line:
-    exec /opt/django/PyVenv/bin/python -m webbrowser -t $STATUSURL
-    by
-    echo "Check daemon process run by user  $MOD_WSGI_USER:"
-    pgrep -u $MOD_WSGI_USER -lf "$MOD_WSGI_SERVER_ROOT"
+echo "Optional: Please edit the $MODWSGIDIR/apachectl to change the status command behavior as follows"
+echo  replace the orginal line in status
+echo  '		exec /opt/django/PyVenv/bin/python -m webbrowser -t $STATUSURL'
+echo  by
 
-EOF
+echo   '	echo Check daemon process run by user  $MOD_WSGI_USER:'
+echo   '	pgrep -u $MOD_WSGI_USER -lf $MOD_WSGI_SERVER_ROOT '
+
+
+
+
+echo "Starting apache..."
 
 ./apachectl start
+
 #./apachectl status
 #./apachectl stop
 #./apachectl status
