@@ -73,16 +73,16 @@ RUN_GROUP=`id -gn $RUN_USER`
 
 cd $DjangoProjDirRoot/sattle/modwsgi
 
-echo "Please edit the ./apachectl to change the status command behavior as follows"
-#status)
-    #replace the orginal line  exec /opt/django/PyVenv/bin/python -m webbrowser -t $STATUSURL
-    #########exec /opt/django/PyVenv/bin/python -m webbrowser -t $STATUSURL
+echo "Optional: Please edit the ./apachectl to change the status command behavior as follows"
+echo << EOF
+status)
+    replace the orginal line:
+    exec /opt/django/PyVenv/bin/python -m webbrowser -t $STATUSURL
+    by
     echo "Check daemon process run by user  $MOD_WSGI_USER:"
-    #echo pgrep -l -f "$MOD_WSGI_SERVER_ROOT"
-    #pgrep -u $MOD_WSGI_USER -lf "$MOD_WSGI_SERVER_ROOT"
-    pgrep -u $MOD_WSGI_USER -lf "$PROCESS_NAME"
+    pgrep -u $MOD_WSGI_USER -lf "$MOD_WSGI_SERVER_ROOT"
 
-
+EOF
 
 ./apachectl start
 #./apachectl status
