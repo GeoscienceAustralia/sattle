@@ -12,11 +12,11 @@ PYTHON_INTERPRETER=python2.7  #OR python2.7 or /usr/local/bin/python2.7
 #$PYTHON_INTERPRETER -m tle2db.tle_loader  "$@"
 
 #-------------------------------------------------------
-##Fei use django framework
-export PYTHONPATH=/home/rms_usr/sattle
-unset DJANGO_SETTINGS_MODULE #will use default settings.py
+##Fei use django framework where is the project modules: /home/rms_usr/sattle
+export PYTHONPATH=/opt/django/sattle
+unset DJANGO_SETTINGS_MODULE #will use default one: settings.py
 $PYTHON_INTERPRETER -m tleserv.tleclient.load_tle_into_db "$@"
 
-#Into another db
-export DJANGO_SETTINGS_MODULE="sattle.mysql_settings"
+#Use another settings file
+export DJANGO_SETTINGS_MODULE="sattle.settings_mysql"
 $PYTHON_INTERPRETER -m tleserv.tleclient.load_tle_into_db "$@"

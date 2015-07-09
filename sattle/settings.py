@@ -121,13 +121,13 @@ import yaml
 with open('/etc/fetch.conf.d/dbconf.yaml', 'r') as f: mydbs = yaml.load(f)
 # get the db credential
 Mysql= mydbs['mysqldb']  # check the config yaml file
-Postgres = mydbs['postgresdb']
+Mysql = mydbs['postgresdb']
 
 #override the db
-DATABASES['default']['HOST'] = Postgres['host']
-DATABASES['default']['NAME'] = Postgres['dbname']
-DATABASES['default']['USER'] = Postgres['user']
-DATABASES['default']['PASSWORD'] = Postgres['password']
+DATABASES['default']['HOST'] = Mysql['host']
+DATABASES['default']['NAME'] = Mysql['dbname']
+DATABASES['default']['USER'] = Mysql['user']
+DATABASES['default']['PASSWORD'] = Mysql['password']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
