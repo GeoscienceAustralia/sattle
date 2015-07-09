@@ -15,6 +15,7 @@ with open('/etc/fetch.conf.d/dbconf.yaml', 'r') as f: mydbs = yaml.load(f)
 Mysql= mydbs['mysqldb']  # according to the config yaml file
 
 #override the db credentials
+DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
 DATABASES['default']['HOST'] = Mysql['host']
 DATABASES['default']['NAME'] = Mysql['dbname']
 DATABASES['default']['USER'] = Mysql['user']

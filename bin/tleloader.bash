@@ -12,11 +12,13 @@ PYTHON_INTERPRETER=python2.7  #OR python2.7 or /usr/local/bin/python2.7
 #$PYTHON_INTERPRETER -m tle2db.tle_loader  "$@"
 
 #-------------------------------------------------------
-##Fei use django framework where is the project modules: /home/rms_usr/sattle
-export PYTHONPATH=/opt/django/sattle
+##Fei use django framework Postgres Database backend
+# activaste virtualenv by source
+source  /opt/django/PyVenv/bin/activate
+export PYTHONPATH=/opt/django/sattle  #where is the project modules installed?
 unset DJANGO_SETTINGS_MODULE #will use default one: settings.py
 $PYTHON_INTERPRETER -m tleserv.tleclient.load_tle_into_db "$@"
 
-#Use another settings file
-export DJANGO_SETTINGS_MODULE="sattle.settings_mysql"
-$PYTHON_INTERPRETER -m tleserv.tleclient.load_tle_into_db "$@"
+#Use another settings file, not working becuase the satellite tables different columns
+#export DJANGO_SETTINGS_MODULE="sattle.settings_mysql"
+#$PYTHON_INTERPRETER -m tleserv.tleclient.load_tle_into_db "$@"
