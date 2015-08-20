@@ -1,11 +1,13 @@
 #!/usr/bin/env python2.7
 """
 Description:
-    what does this script module do? How to do it.
+    Standard setup.py for python packaging. Not really useful for django projects!
 
 Author: fei.zhang@ga.gov.au
 
 Date: 2015-06-30
+Example Run:  python2.7 ./setup.py bdist_rpm  --fix-python
+
 """
 
 from __future__ import print_function
@@ -26,9 +28,9 @@ setupconfig = {
     'version': version,
     'description': 'Satellite TLE Service',
     'packages': ['sattle', 'tleserv' ],
-    # 'package_dir': [''],
-    'scripts': ['bin/tleloader.sh', ],
-    'requires': ['psycopg2','Django','djangorestframework','']  # [ 'mysql-python27', ]
+    #'package_dir': [''], #dir where the packages will be found, ''==current-rootdir
+    'scripts': ['bin/tleloader.bash', ],
+    'requires': ['psycopg2','Django','djangorestframework',]  # [ 'mysql-python27', ]
 }
 
 setup(**setupconfig)
