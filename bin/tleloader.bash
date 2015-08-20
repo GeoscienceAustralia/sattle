@@ -8,7 +8,7 @@ echo "Invoke python script to ingest TLE-files data into Target DB "
 # which python verison to use (must have MySQLDb driver,...)
 PYTHON_INTERPRETER=python2.7  #OR python2.7 or /usr/local/bin/python2.7
 
-### verison-1
+### tleserv project, can injest TLE data into MySQL (and Postgresql, if configured correctly)
 #$PYTHON_INTERPRETER -m tle2db.tle_loader  "$@"
 
 #-------------------------------------------------------
