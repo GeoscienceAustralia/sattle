@@ -1,22 +1,16 @@
-#SatTle
-
-Satellite TLE data service.
+#SatTle: Satellite TLE data RESTful web service.
 
 
-Restful API
+Django Restful API
 
 Admin Web UI
 
 Commandline tools
 
+Apache ModWsgi integration
 
-Apache integration
-
-AWS code deploy
+Automatic deployment script 
 
 setup
 
-unit test
-
-Postgres and Mysql 
-Broad X Deep
+Postgres and Mysql database

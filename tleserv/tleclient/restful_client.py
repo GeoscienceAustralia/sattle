@@ -16,8 +16,8 @@ import requests
 
 # connect to a proper http server
 # Anonymous readable Restful Service end-point base_url
-RESTFUL_BASE_URL = r'http://ec2-52-64-92-80.ap-southeast-2.compute.amazonaws.com/sattle/tleserv'
 RESTFUL_BASE_URL = r'http://10.10.19.65:8000/sattle/tleserv'
+RESTFUL_BASE_URL = r'http://ec2-52-64-92-80.ap-southeast-2.compute.amazonaws.com/sattle/tleserv'
 
 class TleClient:
     def __init__(self, restful_burl):

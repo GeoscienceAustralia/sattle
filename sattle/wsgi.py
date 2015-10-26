@@ -1,5 +1,5 @@
 """
-WSGI config for resttle project.
+WSGI config for sattle project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

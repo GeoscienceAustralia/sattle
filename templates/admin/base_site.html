@@ -1,9 +1,9 @@
 {% extends "admin/base.html" %}
 
-{% block title %}{{ title }} | {{ site_title_FEI |default:_('Satellite TLE System Admin') }}{% endblock %}
+{% block title %}{{ title }} | {{ site_title_FEI |default:_('Satellite TLE Server') }}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header_FEI|default:_('Satellite TLE System Administration') }}</a></h1>
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header_FEI|default:_('Satellite TLE Server Administration') }}</a></h1>
 {% endblock %}
 
 <H1> Hi can you see me?</h1>

@@ -2,6 +2,8 @@
 #  python2.7 with django* installed
 #  To tleclient run the Web server
 #  ./manage.py runserver 0.0.0.0:8000
+# fzhang>  python2.7 manage.py runmodwsgi
+
 
 import os
 import sys
