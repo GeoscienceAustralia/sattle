@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.7
 """
 Description:
-    Standard setup.py for python packaging. Not really useful for django projects!
+    Standard setup.py for python packaging. 
 
 Author: fei.zhang@ga.gov.au
 
