@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-# This is a Django web application, not a usual python app.
-# So, It will not be installed into the python site package as modules.
+# This is a Django web application.
 
-# It is strongly recommended to use python virtualenv to run the python application in a self-contianed manner.case
-# It will enable complete isolate of the application from the system python installed packages.
+# It is strongly recommended to use python virtualenv to run the python application in a self-contianed manner.
+# It will enable complete isolation of the application from the system python installed packages.
 
 #Pre-requesite  sudo yum python27 virtualenv and pip
 
