@@ -1,17 +1,14 @@
 #!/usr/bin/env bash
 ###############################################################################
-# Purpose:  One cmd script to install, config, django, postgres, gunicorn, nginx, modwsgi
+# Purpose:  Shell script to install, config django, postgres, gunicorn, nginx, modwsgi
 #           Python Virtualenv environment, all pyhton package installed by pip into PyVenv
 #
 # Author: fei.zhang@ga.gov.au
-# Date: 2015-06-02
-# Usage: Redhat-CentOS in GA
-# edit the first few lines according to your VM IP then run it as a non-root user, who has sudo privilege
+# InitDate: 2015-06-02
+# Target Deployment: Redhat-CentOS Ubuntu 
 #
-# Todo: Deploy a real App.
-# Todo: Puppert/Ansible/Docker
-# Todo: Further modulize and refactor
 ###############################################################################
+#edit the first few lines according to your VM IP then run it as a non-root user, who has sudo privilege
 
 FqdnameOrIpAddress='10.10.19.44'  # edit this according to your VM's FQDN or IP
 
@@ -24,7 +21,7 @@ POSTGRES_DB_NAME='djangodb' # name of the database that your django project will
 PYTHON_VENV_NAME='PyVenv'
 
 ##--------------------------------------------------------------------------------
-# nothing needs to be changed below this line
+# nothing noramlly needs to be changed below this line
 ##--------------------------------------------------------------------------------
 # BEGIN SCRIPT
 
