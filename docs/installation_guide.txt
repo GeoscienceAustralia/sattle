@@ -1,6 +1,7 @@
 
- Recommended to use python virtualenv to complete isolate this application from the system python installed packages.
-  So setup python27 virtualenv and pip is pre-requisite
+ # Recommend to use python virtualenv to complete isolate this application from the system python installed packages.
+  
+ # So setup python27 virtualenv and pip is pre-requisite
 
  MyDjangoProjDir=/opt/django
 
