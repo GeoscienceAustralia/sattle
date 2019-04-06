@@ -1,5 +1,7 @@
 """
 TLE parser utility class to handle a pair of strings (ie, TLE data) and extract info from them
+
+fei.zhang@ga.gov.au
 """
 import sys
 import hashlib
