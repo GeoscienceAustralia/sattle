@@ -1,16 +1,16 @@
-#SatTle: Satellite TLE data RESTful web service.
+# SatTle: Satellite TLE data RESTful web service.
 
 
-Django Restful API
+* Django Restful API
 
-Admin Web UI
+* Admin Web UI
 
-Commandline tools
+* Commandline tools
 
-Apache ModWsgi integration
+* Apache ModWsgi integration
 
-Automatic deployment script 
+* Automatic deployment script 
 
-setup
+* Setup and install scripts
 
-Postgres and Mysql database
+* Postgres and Mysql database
